@@ -27,26 +27,26 @@ public class ArrayUtils {
         }
             return result;
     }
-
+    /**
+     * Код не прошел тесты:
+     *
+     * Код теста который вызвал ошибку:
+     * public class Test {
+     *     public static void main(String[] args) {
+     *         Object res = ArrayUtils.rotateClockwise(new int[0][]);
+     *         if (res != null) {
+     *         	throw new AssertionError();
+     *         }
+     *         System.out.print("OK");
+     *     }
+     * }
+     */
     public static void main(String[] args) {
         int[][] mat = { { 1, 2, 3 }, { 4, 5, 6}, { 7, 8, 9} };
         int[][] newMatx = rotateClockwise(mat);
         System.out.println(Arrays.deepToString(newMatx));
 
-        /**
-         * Код не прошел тесты:
-         *
-         * Код теста который вызвал ошибку:
-         * public class Test {
-         *     public static void main(String[] args) {
-         *         Object res = ArrayUtils.rotateClockwise(new int[0][]);
-         *         if (res != null) {
-         *         	throw new AssertionError();
-         *         }
-         *         System.out.print("OK");
-         *     }
-         * }
-         */
+
         Object res = ArrayUtils.rotateClockwise(new int[0][]);
         System.out.println(res); // как вернуть null?
 
