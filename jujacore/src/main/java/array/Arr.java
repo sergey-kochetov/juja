@@ -5,6 +5,10 @@ import java.util.Random;
 
 public class Arr {
 
+    /**
+     * Inver array.
+     * @param arr - array
+     */
     public static void invert(int[] arr) {
         if (arr != null && arr.length > 1) {
             for (int k = arr.length - 1; k >= arr.length / 2; k--) {
@@ -29,11 +33,16 @@ public class Arr {
             if (n % 2 == 0) {
                 result[idxNewArr++] = n;
             }
-
         }
         return result;
     }
 
+    /**
+     * Через System.arraycopy но хуже чем велосипед в 3.4 раза.
+     * @param fst - sorted first array
+     * @param snd - sorted second array
+     * @return sorted merge array
+     */
     public static int[] merge(int[] fst, int[] snd) {
         if (fst.length == 0) {
             return snd;
@@ -49,6 +58,12 @@ public class Arr {
         return result;
     }
 
+    /**
+     * Велосипед.
+     * @param fst - fst
+     * @param snd - snd
+     * @return sorted merge array
+     */
     public static int[] merge2(int[] fst, int[] snd) {
         if (fst.length == 0) {
             return snd;
@@ -73,6 +88,11 @@ public class Arr {
         return result;
     }
 
+    /**
+     *  Create random array.
+     * @param capacity - capacity new array
+     * @return new array
+     */
     private static int[] randomArr(int capacity) {
         Random rdm = new Random();
         if (capacity < 0) {
@@ -85,6 +105,11 @@ public class Arr {
         Arrays.sort(result);
         return result;
     }
+
+    /**
+     * Main.
+     * @param args - arg
+     */
     public static void main(String[] args) {
 
         int[] array = randomArr(20_000_000);
