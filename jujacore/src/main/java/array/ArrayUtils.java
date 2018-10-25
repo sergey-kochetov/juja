@@ -1,19 +1,25 @@
 package array;
 
-import java.util.Arrays;
-
+/**
+ * ArrayUtils.
+ */
 public class ArrayUtils {
-
+    /**
+     * Rotate two-dimensional array clockwise.
+     * @param arg - arrays
+     * @return rotate array
+     */
     public static int[][] rotateClockwise(final int[][] arg) {
-        int[][] result = arg;
-        if (result == null ) {
+        if (arg == null || arg.length == 0) {
             return null;
         }
-        for (int[] ar : result) {
-            if (ar == null || ar.length == 0 || ar.length != result.length) {
+        for (int[] a: arg) {
+            if (a == null || a.length != arg.length) {
                 return null;
             }
         }
+        int[][] result = arg.clone();
+
         int len = result.length;
         int temp;
         for (int x = 0; x < len / 2; x++) {
@@ -27,28 +33,5 @@ public class ArrayUtils {
         }
             return result;
     }
-    /**
-     * Код не прошел тесты:
-     *
-     * Код теста который вызвал ошибку:
-     * public class Test {
-     *     public static void main(String[] args) {
-     *         Object res = ArrayUtils.rotateClockwise(new int[0][]);
-     *         if (res != null) {
-     *         	throw new AssertionError();
-     *         }
-     *         System.out.print("OK");
-     *     }
-     * }
-     */
-    public static void main(String[] args) {
-        int[][] mat = { { 1, 2, 3 }, { 4, 5, 6}, { 7, 8, 9} };
-        int[][] newMatx = rotateClockwise(mat);
-        System.out.println(Arrays.deepToString(newMatx));
 
-
-        Object res = ArrayUtils.rotateClockwise(new int[0][]);
-        System.out.println(res); // как вернуть null?
-
-    }
 }
