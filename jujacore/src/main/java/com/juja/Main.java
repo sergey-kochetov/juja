@@ -2,24 +2,7 @@ package com.juja;
 
 public class Main {
 
-    public static void main(String[] args) {
-
-        String input = "codex";
-        String expected = "codey";
-
-        assetMethod(input, expected);
-
-    }
-
-    private static void assetMethod(String input, String expected) {
-        String actual = changeXY(input);
-        String staus = actual.equals("codey") ?
-                "Ok" :
-                "FAIL expected: " + expected + " but was: '" + actual + "'";
-        System.out.println(staus);
-    }
-
-    public static String changeXY(String input) {
+    public static String changeXYold(String input) {
         char[] chars = input.toCharArray();
                 char[] result = new char[chars.length];
         for (int index = 0; index < chars.length; index++) {
@@ -30,6 +13,19 @@ public class Main {
             }
         }
         return new String(result);
+    }
+    public static String changeXY(String input) {
+        if (input.length() == 0) {
+            return input;
+        }
+        String part = "";
+        if (input.length() > 1) {
+           part = changeXY(input.substring(1));
+        }
+
+       char ch = input.charAt(0);
+       char newCh = (ch == 'x' ? 'y' : ch);
+       return newCh + part;
     }
 
 }
