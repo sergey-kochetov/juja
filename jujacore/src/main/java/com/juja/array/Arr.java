@@ -1,4 +1,4 @@
-package array;
+package com.juja.array;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -6,8 +6,8 @@ import java.util.Random;
 public class Arr {
 
     /**
-     * Inver array.
-     * @param arr - array
+     * Inver com.juja.array.
+     * @param arr - com.juja.array
      */
     public static void invert(int[] arr) {
         if (arr != null && arr.length > 1) {
@@ -39,9 +39,9 @@ public class Arr {
 
     /**
      * Через System.arraycopy но хуже чем велосипед в 3.4 раза.
-     * @param fst - sorted first array
-     * @param snd - sorted second array
-     * @return sorted merge array
+     * @param fst - com.juja.sorted first com.juja.array
+     * @param snd - com.juja.sorted second com.juja.array
+     * @return com.juja.sorted merge com.juja.array
      */
     public static int[] merge(int[] fst, int[] snd) {
         if (fst.length == 0) {
@@ -62,7 +62,7 @@ public class Arr {
      * Велосипед.
      * @param fst - fst
      * @param snd - snd
-     * @return sorted merge array
+     * @return com.juja.sorted merge com.juja.array
      */
     public static int[] merge2(int[] fst, int[] snd) {
         if (fst.length == 0) {
@@ -89,9 +89,9 @@ public class Arr {
     }
 
     /**
-     *  Create random array.
-     * @param capacity - capacity new array
-     * @return new array
+     *  Create random com.juja.array.
+     * @param capacity - capacity new com.juja.array
+     * @return new com.juja.array
      */
     private static int[] randomArr(int capacity) {
         Random rdm = new Random();
@@ -107,7 +107,7 @@ public class Arr {
     }
 
     /**
-     * Main.
+     * com.juja.Main.
      * @param args - arg
      */
     public static void main(String[] args) {

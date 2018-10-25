@@ -1,4 +1,4 @@
-package sorted;
+package com.juja.sorted;
 
 public class InsertionSorter {
     public static void sort(int[] arr) {

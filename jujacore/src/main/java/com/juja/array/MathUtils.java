@@ -1,4 +1,4 @@
-package array;
+package com.juja.array;
 
 import java.util.Arrays;
 
@@ -32,7 +32,7 @@ public class MathUtils {
      * lookFor([0, -100, 1, 1, 0, -1]) = [2, 3]
      * lookFor([1, 1, 0, 1, 1]) = [3, 4] // возвращаем правый
      * lookFor([0, -1, 0, -1]) = [] // отсутствуют положительные числа.
-     * @param array - array
+     * @param array - com.juja.array
      * @return result
      */
     public static int[] lookFor(int[] array) {
@@ -72,7 +72,7 @@ public class MathUtils {
     }
 
     /**
-     * Main.
+     * com.juja.Main.
      * @param args - arg
      */
     public static void main(String[] args) {
