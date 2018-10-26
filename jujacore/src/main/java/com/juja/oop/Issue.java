@@ -1,12 +1,6 @@
 package com.juja.oop;
 
-/**
- * Необходимо реализовать метод toPrint()
- * для класса Book, который выводит на печать
- * информацию про книгу в следующем формате
- * Book{name=<name>,countPages=<countPages>,author=<authorBook>}
- */
-public class Issue {
+class Issue {
     private String name;
     private int countPages;
 
@@ -16,12 +10,45 @@ public class Issue {
     }
 
     public String toPrint() {
-        return String.format("Book{name=%s,countPages=%s", name, countPages);
+        return "Issue{" +
+                "name=" + name +
+                ",countPages=" + countPages +
+                "}";
+    }
+
+    public int getCountPages() {
+        return countPages;
+    }
+
+    public String getName(){
+        return name;
     }
 
 }
 
+class Journal extends Issue {
+    private String yearJournal;
+    private String numberJournal;
+
+    public Journal(String nameJournal, int countPages, String yearJournal, String numberJournal) {
+        super(nameJournal, countPages);
+        this.yearJournal = yearJournal;
+        this.numberJournal = numberJournal;
+    }
+
+    @Override
+    public String toPrint() {
+        return "Journal{" +
+                "name=" + getName() +
+                ",countPages=" + getCountPages() +
+                ",year=" + yearJournal +
+                ",number=" + numberJournal +
+                "}";
+    }
+}
+
 class Book extends Issue {
+
     private String authorBook;
 
     public Book(String name, int countPages, String authorBook) {
@@ -31,27 +58,23 @@ class Book extends Issue {
 
     @Override
     public String toPrint() {
-        return String.format("%s,author=%s}", super.toPrint(), authorBook);
+        return "Book{" +
+                "name=" + getName() +
+                ",countPages=" + getCountPages() +
+                ",author=" + authorBook +
+                "}";
+    }
+}
+class Library {
+
+    public String getIssueWithCountPagesMoreN(Issue[] catalog, int barrierCountPages) {
+        StringBuilder result = new StringBuilder();
+        for (Issue issue : catalog) {
+            if (issue.getCountPages() > barrierCountPages) {
+                result.append(issue.toPrint());
+            }
+        }
+        return result.toString();
     }
 
-    public static void main(String[] args) {
-        String testNameBook = "TestNameBook";
-        String testAuthorBook = "TestBookAuthor";
-        int countPages = 100;
-        String expectedBookPrint = "Book{name=TestNameBook,countPages=100,author=TestBookAuthor}";
-
-        Issue book = new Book(testNameBook, countPages, testAuthorBook);
-
-        String actualBookPrint = book.toPrint();
-
-        //check
-        if (actualBookPrint == null)
-            throw new AssertionError("Result cannot be null");
-
-        if (actualBookPrint.equals(expectedBookPrint))
-            System.out.print("OK");
-        else
-            throw new AssertionError("Expected " + expectedBookPrint + " but found " + actualBookPrint);
-
-    }
 }
