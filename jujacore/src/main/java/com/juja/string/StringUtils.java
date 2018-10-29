@@ -33,10 +33,4 @@ public class StringUtils {
         }
         return String.valueOf(result);
     }
-
-    public static void main(String[] args) {
-        System.out.println(rightShift("ABCDEFG", 0));
-        System.out.println(rightShift("ABCDEFG", 1));
-        System.out.println(rightShift("ABCDEFG", 2));
-    }
 }
