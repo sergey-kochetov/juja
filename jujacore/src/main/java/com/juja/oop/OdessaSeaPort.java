@@ -1,6 +1,7 @@
 package com.juja.oop;
 
-        import java.util.Arrays;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class OdessaSeaPort implements SeaPortQueue {
     private static final int NO_SHIP_IN_ARRAY = -1;
@@ -39,5 +40,22 @@ public class OdessaSeaPort implements SeaPortQueue {
             return result.toString();
         }
         return "QueueEmpty";
+    }
+
+    public static String sortSumPaymentAsc(AbstractShip[] arrayShips) {
+        if (arrayShips == null) {
+            return "";
+        }
+        Arrays.sort(arrayShips, new Comparator<AbstractShip>() {
+            @Override
+            public int compare(AbstractShip o1, AbstractShip o2) {
+                return (int) ((int) o1.calculatePayment() - o2.calculatePayment());
+            }
+        });
+        StringBuilder result = new StringBuilder();
+        for (AbstractShip ship : arrayShips) {
+            result.append(ship.getName()).append("=").append(ship.calculatePayment());
+        }
+        return result.toString();
     }
 }
