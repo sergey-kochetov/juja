@@ -134,5 +134,4 @@ public class SimpleArrayList <E> implements SimpleList<E> {
         };
     }
 
-
 }
