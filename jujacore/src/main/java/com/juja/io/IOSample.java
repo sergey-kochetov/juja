@@ -1,6 +1,5 @@
 package com.juja.io;
 
-import com.juja.array.Arr;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -11,9 +10,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 public class IOSample extends AbstractSample {
@@ -216,7 +213,7 @@ public class IOSample extends AbstractSample {
     public void testInputStreamIntegerToByteCrunch() throws IOException {
         // given
         int[] data = new int[]{258, 257, 256, 255, 254, 253, 252,
-                                6, 5, 4, 3, 2, 1, 0, -1, -2, -3};
+                6, 5, 4, 3, 2, 1, 0, -1, -2, -3};
         InputStream input = new InputStream() {
             private int index = 0;
             @Override
@@ -533,7 +530,7 @@ public class IOSample extends AbstractSample {
     public void testInputStreamReader() throws IOException {
         // given
         byte[] data = new byte[]{-48, -97, -47, -128, -48, -72, -48, -78, -48, -75, -47, -126, 32, -48,
-                                -100, -48, -72, -47, -128, 33};
+                -100, -48, -72, -47, -128, 33};
         InputStream input = new ByteArrayInputStream(data);
         Reader reader = new InputStreamReader(input, "UTF-8");
         //Reader reader1 = new BufferedReader(new InputStreamReader(input, "UTF-8"));
@@ -629,7 +626,7 @@ public class IOSample extends AbstractSample {
         // осторожно пробуем записать
         try {
             out.write(new byte[]{-48, -97, -47, -128, -48, -72, -48, -78, -48, -75, -47, -126,
-                                    32, -48, -100, -48, -72, -47, -128, 33});
+                    32, -48, -100, -48, -72, -47, -128, 33});
             // есть и другие возможности
             // получить SeekablebyteChannel для работы с файлом
             FileChannel channel = out.getChannel();
@@ -795,10 +792,10 @@ public class IOSample extends AbstractSample {
         // then
         // вернули исходник
         assertEquals("[2.718281828459045, " +
-                "Привет Мир!, " +
-                "42, " +
-                "true, " +
-                "java.awt.Point[x=23,y=45]]",
+                        "Привет Мир!, " +
+                        "42, " +
+                        "true, " +
+                        "java.awt.Point[x=23,y=45]]",
                 Arrays.toString((Object[]) object));
 
     }
@@ -922,7 +919,7 @@ public class IOSample extends AbstractSample {
             for (int index = 0; index < b.length; index++) {
                 b[index] = (byte) encode(b[index]);
             }
-           return read;
+            return read;
         }
 
         @Override
@@ -930,5 +927,153 @@ public class IOSample extends AbstractSample {
             int read = in.read();
             return encode(read);
         }
+    }
+    //--------------FilterReader / FilterWriter---------------
+    @Test
+    public void testFilterReader_FilterWriter() throws IOException {
+        // given
+        String string = "Привет Мир!";
+        char[] chars = string.toCharArray();
+        Reader arrayReader = new CharArrayReader(chars);
+        // это декоратор, анонимно реализуем его тут на основе фильтра
+        Reader reader = new FilterReader(arrayReader) {
+            @Override
+            public int read() throws IOException {
+                // тут мы вначале читаем данные бызовым Reader
+                char read = (char) super.read();
+                // а потом меняем их
+                return changeCase(read);
+            }
+            @Override
+            public int read(char[] cbuf, int off, int len) throws IOException {
+                // тут мы вначале читаем данные бызовым Reader
+                int read = super.read(cbuf, off, len);
+                // а потом меняем их
+                for (int i = off; i < read; i++) {
+                    cbuf[i] = changeCase(cbuf[i]);
+                }
+                return read;
+            }
+        };
+        // теперь тоже в обратном порядке
+        Writer arrayWriter = new CharArrayWriter();
+        // это наш декаратор, анонимно реализуем его тут на основе фильтра
+        Writer writer = new FilterWriter(arrayWriter) {
+            @Override
+            public void write(int c) throws IOException {
+                // а тут мы кодируем перед отправкой в базовый Writer
+                char ch = changeCase((char) c);
+                // после отправляем
+                super.write(c);
+            }
+
+            @Override
+            public void write(char[] cbuf, int off, int len) throws IOException {
+                // тут мы кодируем перед отправкой в базовый Writer
+                for (int i = off; i < len; i++) {
+                    cbuf[i] = changeCase(cbuf[i]);
+                }
+                // после отправляем
+                super.write(cbuf, off, len);
+            }
+
+            @Override
+            public void write(String str, int off, int len) throws IOException {
+                this.write(str.toCharArray(), off, len);
+            }
+        };
+        // "Привет Мир!" -> CharArrayReader -> FilterReader -> "пРИВЕТ мИР!"
+        char[] buffer = new char[100];
+        int read = reader.read(buffer);
+        // then
+        assertEquals(11, read);
+        String encrypted = new String(buffer, 0, read);
+        assertEquals("пРИВЕТ мИР!", encrypted);
+        // передаем данные в связку
+        // "пРИВЕТ мИР!" -> FilterWriter -> CharArrayWriter -> "Привет Мир!"
+        writer.write(buffer, 0, read);
+        // then
+        String actual = arrayWriter.toString();
+        assertEquals("Привет Мир!", actual);
+    }
+    private char changeCase(char ch) {
+        if (Character.isUpperCase(ch)) {
+            return Character.toLowerCase(ch);
+        }
+        return Character.toUpperCase(ch);
+    }
+    // ------------PrintStream-------------
+    // PrintStream - это фильтр, который добовляет к OutputStream
+    // методы для печати реальных данных в строковом формате
+    // кстати, System.out есть обэект этого класса
+    @Test
+    public void testPrintStream() throws UnsupportedEncodingException {
+        // подготовили приемник
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        // задекорировали PrintStream исходный OutputStream
+        PrintStream out = new PrintStream(bytes, true, "UTF-8");
+        // напечатали
+        out.println("Привет Мир!");
+        // получили в приемнике то что пришло
+        byte[] array = bytes.toByteArray();
+        assertEquals(String.format("%s%s", "Привет Мир!", System.lineSeparator()),
+                new String(array, "UTF-8"));
+    }
+    //------------PrintWriter---------------
+    // Writer - то же самое что PrintStream, только для Writer
+    @Test
+    public void testPrintWriter() throws UnsupportedEncodingException {
+        // подготовили приемник
+        CharArrayWriter chars = new CharArrayWriter();
+        // задекорировали PrintWriter исходный Writer
+        PrintWriter out = new PrintWriter(chars, true);
+        // Напечатали
+        out.println("Привет Мир!");
+        // получили в приемнике то что пришло
+        char[] array = chars.toCharArray();
+        assertEquals(String.format("%s%s", "Привет Мир!", System.lineSeparator()),
+                String.valueOf(array));
+    }
+    // декораторы
+    // TODO ----------BufferedInputStream / BufferedOutputStream-------
+    // TODO ----------BufferedReader / BufferedWriter------------------
+
+    // -------ObjectInputStream / ObjectOutputStreaem---------
+    @Test
+    public void testMultipleSerialization() throws IOException, ClassNotFoundException {
+        // given
+        // есть какие-то данные...
+        List<Object> list = new ArrayList<>();
+
+        list.add(Math.E);
+        list.add("Привет Мир!");
+        list.add(42);
+        list.add(true);
+        list.add(new Point(23, 45));
+
+        // when
+        // создаем объекты для сериализации
+        ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
+        // ObjectOutputStream работает на каком-то внешнем OutputStream
+        ObjectOutputStream out = new ObjectOutputStream(byteArrayOutput);
+        // пишем объект 2шт.
+        out.writeObject(list);
+        out.writeObject(list);
+        // получаем массив байтов
+        byte[] bytes = byteArrayOutput.toByteArray();
+
+        // when
+        // создаем объекты для десериализации
+        InputStream byteArrayInput = new ByteArrayInputStream(bytes);
+        ObjectInputStream in = new ObjectInputStream(byteArrayInput);
+        // читаем объекты
+        Object object1 = in.readObject();
+        Object object2 = in.readObject();
+        // then
+        // вернули исходник
+        assertEquals("[2.718281828459045, Привет Мир!, 42, true, java.awt.Point[x=23,y=45]]", object1.toString());
+        assertEquals("[2.718281828459045, Привет Мир!, 42, true, java.awt.Point[x=23,y=45]]", object2.toString());
+
+
     }
 }
