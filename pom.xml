@@ -21,7 +21,7 @@
 
     <modules>
 
-        <module>juja-core</module>
+        <module>jujacore</module>
     </modules>
 
     <build>
@@ -74,7 +74,14 @@
                <version>4.12</version>
                <scope>test</scope>
            </dependency>
+           <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+           <dependency>
+               <groupId>commons-codec</groupId>
+               <artifactId>commons-codec</artifactId>
+               <version>1.9</version>
+           </dependency>
        </dependencies>
+
 
 
    </project>
