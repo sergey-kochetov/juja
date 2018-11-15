@@ -101,6 +101,13 @@
                <artifactId>jsoup</artifactId>
                <version>1.7.2</version>
            </dependency>
+           <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+           <dependency>
+               <groupId>org.hibernate</groupId>
+               <artifactId>hibernate-core</artifactId>
+               <version>5.3.7.Final</version>
+           </dependency>
+
 
 
 
