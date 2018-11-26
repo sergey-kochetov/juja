@@ -1,27 +1,34 @@
-package com.juja;
+package com.juja.model;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class DatabaseManagerTest {
-    private DatabaseManager manager;
+public class JDBCDatabaseManagerTest extends DatabaseManagerTest  {
+
+    @Override
+    public DatabaseManager getDatabaseManager() {
+        return new JDBCDatabaseManager();
+    }
+
+    @Override
+    public Object store() {
+        return null;
+    }
 
     @Before
     public void setup() {
-        try {
-            DBinit.startUp();
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-        }
-        manager = new DatabaseManager();
-       Connection connection = manager.getConnection();
+//        try {
+//            DBinit.startUp();
+//        } catch (URISyntaxException | IOException e) {
+//            e.printStackTrace();
+//        }
+        manager = getDatabaseManager();
+        Connection connection = manager.getConnection();
     }
 
     @Test
@@ -33,14 +40,15 @@ public class DatabaseManagerTest {
     @Test
     public void testGetTableData() {
         // given
-        manager.clear("customer");
+        String customer = "customer";
+        manager.clear(customer);
 
         // when
         DataSet input = new DataSet();
         input.put("c_id", 13);
         input.put("c_name", "Stiven");
         input.put("c_password", "pass");
-        manager.create(input);
+        manager.create(customer, input);
 
         // then
         DataSet[] users = manager.getTableData("customer");
@@ -54,13 +62,14 @@ public class DatabaseManagerTest {
     @Test
     public void testUpdateTableData() {
         // given
-        manager.clear("customer");
+        String customer = "customer";
+        manager.clear(customer);
 
         DataSet input = new DataSet();
         input.put("c_id", 13);
         input.put("c_name", "Stiven");
         input.put("c_password", "pass");
-        manager.create(input);
+        manager.create(customer, input);
 
         // when
         DataSet newValue = new DataSet();

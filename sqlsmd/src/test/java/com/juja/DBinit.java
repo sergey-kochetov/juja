@@ -1,5 +1,8 @@
 package com.juja;
 
+import com.juja.model.JDBCDatabaseManager;
+import com.juja.model.JDBCDatabaseManagerTest;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -14,9 +17,9 @@ import java.util.stream.Collectors;
 public class DBinit {
     public static void startUp() throws URISyntaxException, IOException {
         // given
-        URL url1 = DatabaseManagerTest.class.getClassLoader()
+        URL url1 = JDBCDatabaseManagerTest.class.getClassLoader()
                 .getResource("create_table.sql");
-        URL url2 = DatabaseManagerTest.class.getClassLoader()
+        URL url2 = JDBCDatabaseManagerTest.class.getClassLoader()
                 .getResource("data_customer.sql");
 
 
@@ -27,7 +30,7 @@ public class DBinit {
         String sql2 = lines2.stream().collect(Collectors.joining());
 
 
-        try (Connection con = new DatabaseManager().getConnection();
+        try (Connection con = new JDBCDatabaseManager().getConnection();
              Statement stmp = con.createStatement();
         ) {
             stmp.executeUpdate(sql1);

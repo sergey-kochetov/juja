@@ -1,5 +1,7 @@
 package com.juja;
 
+import com.juja.model.JDBCDatabaseManager;
+
 import java.sql.*;
 import java.util.Random;
 
@@ -8,7 +10,7 @@ public class Main {
 
         Statement stmt = null;
 
-        Connection connection =  new DatabaseManager().getConnection();
+        Connection connection =  new JDBCDatabaseManager().getConnection();
 
 
         //insert

@@ -1,11 +1,11 @@
-package com.juja;
+package com.juja.model;
 
 import com.juja.config.Config;
 
 import java.sql.*;
 import java.util.Arrays;
 
-public class DatabaseManager {
+public class JDBCDatabaseManager implements DatabaseManager  {
     private Connection connection;
 
     private void connect() {
@@ -21,30 +21,47 @@ public class DatabaseManager {
         }
     }
 
+    public void connect(String database, String userName, String password) {
+
+        try {
+            connection = DriverManager.getConnection(
+                    "jdbc:postgresql://localhost:5432/" + database, userName,
+                    password);
+        } catch (SQLException e) {
+            connection = null;
+            throw new RuntimeException(
+                    String.format("Cant get connection for model:%s user:%s",
+                            database, userName),
+                    e);
+        }
+    }
+
+    @Override
     public Connection getConnection() {
         connect();
         return connection;
     }
 
     public static void main(String[] args) throws SQLException {
-        DatabaseManager manager = new DatabaseManager();
+        JDBCDatabaseManager manager = new JDBCDatabaseManager();
         Connection connection = manager.getConnection();
 
         // delete
-        manager.clear("customer");
+        String customer = "customer";
+        manager.clear(customer);
 
         // insert
         DataSet data = new DataSet();
         data.put("c_id", 13);
         data.put("c_name", "Stiven");
         data.put("c_password", "pass");
-        manager.create(data);
+        manager.create(customer, data);
 
         // select
         String[] tables = manager.getTableNames();
         System.out.println(Arrays.toString(tables));
 
-        String tableName = "customer";
+        String tableName = customer;
 
         DataSet[] result = manager.getTableData(tableName);
         System.out.println(Arrays.toString(result));
@@ -54,8 +71,9 @@ public class DatabaseManager {
 
         connection.close();
     }
-
+    @Override
     public DataSet[] getTableData(String tableName) {
+        validateTable(tableName);
         try {
             int size = getSize(tableName);
 
@@ -79,8 +97,9 @@ public class DatabaseManager {
             return new DataSet[0];
         }
     }
-
-    private int getSize(String tableName) throws SQLException {
+    @Override
+    public int getSize(String tableName) throws SQLException {
+        validateTable(tableName);
         Statement stmt = connection.createStatement();
         ResultSet rsCount = stmt.executeQuery("SELECT COUNT(*) FROM public." + tableName);
         rsCount.next();
@@ -88,7 +107,7 @@ public class DatabaseManager {
         rsCount.close();
         return size;
     }
-
+    @Override
     public String[] getTableNames() {
         try {
             Statement stmt = connection.createStatement();
@@ -107,8 +126,9 @@ public class DatabaseManager {
             return new String[0];
         }
     }
-
+    @Override
     public void clear(String tableName) {
+        validateTable(tableName);
         try {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate("DELETE FROM public." + tableName);
@@ -117,15 +137,16 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-
-    public void create(DataSet input) {
+    @Override
+    public void create(String tableName, DataSet input) {
+        validateTable(tableName);
         try {
             Statement stmt = connection.createStatement();
 
             String tableNames = getNameFormated(input, "%s,");
             String values = getValuesFormated(input, "'%s',");
 
-            stmt.executeUpdate("INSERT INTO public.customer (" + tableNames + ")" +
+            stmt.executeUpdate("INSERT INTO public." + tableName + " (" + tableNames + ")" +
                     "VALUES (" + values + ")");
             stmt.close();
         } catch (SQLException e) {
@@ -133,16 +154,9 @@ public class DatabaseManager {
         }
     }
 
-    private String getValuesFormated(DataSet input, String format) {
-        StringBuilder values = new StringBuilder();
-        for (Object value: input.getValues()) {
-            values.append(String.format(format, value));
-        }
-        values = new StringBuilder(values.substring(0, values.length() - 1));
-        return values.toString();
-    }
-
+    @Override
     public void update(String tableName, int id, DataSet newValue) {
+        validateTable(tableName);
         try {
             String tableNames = getNameFormated(newValue, "%s = ?,");
 
@@ -172,5 +186,19 @@ public class DatabaseManager {
         return string.toString();
     }
 
+    private String getValuesFormated(DataSet input, String format) {
+        StringBuilder values = new StringBuilder();
+        for (Object value: input.getValues()) {
+            values.append(String.format(format, value));
+        }
+        values = new StringBuilder(values.substring(0, values.length() - 1));
+        return values.toString();
+    }
+
+    private void validateTable(String tableName) {
+        if (!"customer".equals(tableName)) {
+            throw new UnsupportedOperationException("Only for 'customer' table");
+        }
+    }
 
 }
