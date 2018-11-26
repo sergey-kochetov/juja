@@ -22,7 +22,7 @@
 
     <modules>
         <module>jujacore</module>
-        <module>jujaweb</module>
+        <module>sqlsmd</module>
     </modules>
 
     <build>
