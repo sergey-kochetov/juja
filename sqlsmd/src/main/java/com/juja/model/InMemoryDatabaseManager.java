@@ -13,6 +13,11 @@ public class InMemoryDatabaseManager implements DatabaseManager {
 
 
     @Override
+    public void connect(String database, String userName, String password) {
+
+    }
+
+    @Override
     public Connection getConnection() {
         return null;
     }
@@ -60,6 +65,11 @@ public class InMemoryDatabaseManager implements DatabaseManager {
                 data[index].updateFrom(newValue);
             }
         }
+    }
+
+    @Override
+    public String[] getTableColumns(String tableName) {
+        return new String[] {"name", "password", "id"};
     }
 
     private void validateTable(String tableName) {

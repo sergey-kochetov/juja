@@ -5,6 +5,8 @@ import java.sql.SQLException;
 
 public interface DatabaseManager {
 
+    void connect(String database, String userName, String password);
+
     Connection getConnection();
 
     DataSet[] getTableData(String tableName);
@@ -18,4 +20,6 @@ public interface DatabaseManager {
     void create(String tableName, DataSet input);
 
     void update(String tableName, int id, DataSet newValue);
+
+    String[] getTableColumns(String tableName);
 }

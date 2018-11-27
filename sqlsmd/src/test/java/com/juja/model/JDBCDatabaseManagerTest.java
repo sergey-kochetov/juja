@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
-public class JDBCDatabaseManagerTest extends DatabaseManagerTest  {
+public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
 
     @Override
     public DatabaseManager getDatabaseManager() {
@@ -86,4 +86,17 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest  {
         assertEquals("[13, Pup, pass2]", Arrays.toString(user.getValues()));
     }
 
+    @Test
+    public void testGetColumnNames() {
+        // given
+        String customer = "customer";
+        manager.clear(customer);
+
+        // when
+        String[] columnNames = manager.getTableColumns(customer);
+
+        // then
+        assertEquals("[c_id, c_name, c_password]", Arrays.toString(columnNames));
+
+    }
 }
