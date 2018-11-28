@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.google.common.base.Strings;
 import com.juja.model.DataSet;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
@@ -23,37 +24,68 @@ public class FindCommand implements Command {
     public void process(String command) {
         String[] data = command.split("\\|");
         String tableName = data[1];
-        DataSet[] tableData = manager.getTableData(tableName);
+
         String[] tableColumns = manager.getTableColumns(tableName);
+        DataSet[] tableData = manager.getTableData(tableName);
 
-        printHeader(tableColumns);
-        printTable(tableData);
+        int[] lengthRow = lengthRowData(tableColumns);
+
+
+        printHeader(tableColumns, lengthRow);
+        printTable(tableData, lengthRow);
     }
 
+    private static final int MIN_LENGTH = 15;
 
-    private void printTable(DataSet[] tableData) {
-        for (DataSet row : tableData) {
-            printRow(row);
+    private int[] lengthRowData(String[] head) {
+        int[] result = new int[head.length];
+        result[0] = MIN_LENGTH / 2;
+        for (int i = 1; i < head.length; i++){
+
+            if (head[i].length() >= MIN_LENGTH) {
+                result[i] = head[i].length();
+            } else {
+                result[i] = MIN_LENGTH;
+            }
+
         }
+        return result;
     }
 
-    private void printRow(DataSet row) {
+
+    private void printTable(DataSet[] tableData, int[] lengthRow) {
+        for (int i = 0; i < tableData.length; i++) {
+            printRow(tableData[i], lengthRow);
+        }
+        printSeporator(lengthRow);
+    }
+
+    private void printRow(DataSet row, int[] lengthRow) {
         Object[] values = row.getValues();
-        String result = "|";
-        for (Object value : values) {
-            result += value + "|";
+        StringBuilder result = new StringBuilder("|");
+        for (int i = 0; i < values.length; i++) {
+            result.append(Strings.padEnd(values[i].toString(), lengthRow[i], ' ')).append("|");
         }
-        view.write(result);
+        view.write(result.toString());
     }
 
-    private void printHeader(String[] tableColumns) {
+    private void printHeader(String[] tableColumns, int[] lengthRow) {
 
-        String result = "|";
-        for (String name : tableColumns) {
-            result += name +"|";
+        StringBuilder result = new StringBuilder("|");
+        for (int i = 0; i < lengthRow.length ; i++) {
+            result.append(Strings.padEnd(tableColumns[i], lengthRow[i], ' ')).append("|");
         }
-        view.write("+++++++++++++++");
-        view.write(result);
-        view.write("+++++++++++++++");
+        printSeporator(lengthRow);
+        view.write(result.toString());
+        printSeporator(lengthRow);
+    }
+
+    private void printSeporator(int[] lengthRow) {
+        StringBuilder result = new StringBuilder("+");
+        for (int length : lengthRow) {
+            result.append(Strings.repeat("-", length));
+            result.append("+");
+        }
+       view.write(result.toString());
     }
 }

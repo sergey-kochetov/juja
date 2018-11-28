@@ -141,9 +141,10 @@ public class IntegrationTest {
                 "Enter command (or 'help'): \r\n" +
                 "table 'customer' was successfully cleared.\r\n" +
                         "Enter command (or 'help'): \r\n" +
-                "+++++++++++++++\r\n" +
-                "|c_id|c_name|c_password|\r\n" +
-                "+++++++++++++++\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|c_id   |c_name         |c_password     |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "+-------+---------------+---------------+\r\n" +
                 "Enter command (or 'help'): \r\n" +
                 "bye...\r\n", getData());
     }
@@ -172,11 +173,12 @@ public class IntegrationTest {
                 "Enter command (or 'help'): \r\n" +
                 "data '{names:[c_id, c_name, c_password], values:[14, eva, +++]}' was successfully created in table 'customer'\r\n" +
                 "Enter command (or 'help'): \r\n" +
-                "+++++++++++++++\r\n" +
-                "|c_id|c_name|c_password|\r\n" +
-                "+++++++++++++++\r\n" +
-                "|13|adam|***|\r\n" +
-                "|14|eva|+++|\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|c_id   |c_name         |c_password     |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|13     |adam           |***            |\r\n" +
+                "|14     |eva            |+++            |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
                 "Enter command (or 'help'): \r\n" +
                 "bye...\r\n", getData());
     }
