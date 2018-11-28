@@ -1,6 +1,5 @@
 package com.juja.controller.command;
 
-import com.juja.controller.command.Command;
 import com.juja.model.DataSet;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
