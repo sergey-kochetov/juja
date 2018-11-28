@@ -72,6 +72,11 @@ public class InMemoryDatabaseManager implements DatabaseManager {
         return new String[] {"name", "password", "id"};
     }
 
+    @Override
+    public boolean isConnected() {
+        return false;
+    }
+
     private void validateTable(String tableName) {
         if (!"customer".equals(tableName)) {
             throw new UnsupportedOperationException("Only for 'user' table, but you try to work with: " + tableName);

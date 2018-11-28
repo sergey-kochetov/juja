@@ -99,4 +99,8 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         assertEquals("[c_id, c_name, c_password]", Arrays.toString(columnNames));
 
     }
+    @Test
+    public void testIsConnected() {
+        assertEquals(true, manager.isConnected());
+    }
 }

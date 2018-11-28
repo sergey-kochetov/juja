@@ -9,7 +9,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     private Connection connection;
 
     private void connect() {
-        if (connection == null) {
+        if (!isConnected()) {
             try {
                 connection = DriverManager.getConnection(
                         Config.getProperty(Config.DB_URL),
@@ -198,6 +198,11 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         }
     }
 
+    @Override
+    public boolean isConnected() {
+        return connection != null;
+    }
+
     private String getNameFormated(DataSet newValue, String format) {
         StringBuilder string = new StringBuilder();
         for (String name : newValue.getNames()) {
@@ -217,9 +222,9 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     private void validateTable(String tableName) {
-        if (!"customer".equals(tableName)) {
-            throw new UnsupportedOperationException("Only for 'customer' table");
-        }
+//        if (!"customer".equals(tableName)) {
+//            throw new UnsupportedOperationException("Only for 'customer' table");
+//        }
     }
 
 }
