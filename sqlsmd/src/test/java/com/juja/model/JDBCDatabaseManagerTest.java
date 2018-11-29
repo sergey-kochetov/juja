@@ -52,10 +52,10 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         manager.create(customer, input);
 
         // then
-        DataSet[] users = manager.getTableData("customer");
-        assertEquals(1, users.length);
+        List<DataSet> users = manager.getTableData("customer");
+        assertEquals(1, users.size());
 
-        DataSet user = users[0];
+        DataSet user = users.get(0);
         assertEquals("[c_id, c_name, c_password]", Arrays.toString(user.getNames()));
         assertEquals("[13, Stiven, pass]", Arrays.toString(user.getValues()));
     }
@@ -79,10 +79,10 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         manager.update("customer", 10, newValue);
 
         // then
-        DataSet[] users = manager.getTableData("customer");
-        assertEquals(1, users.length);
+        List<DataSet> users = manager.getTableData("customer");
+        assertEquals(1, users.size());
 
-        DataSet user = users[0];
+        DataSet user = users.get(0);
         assertEquals("[c_id, c_name, c_password]", Arrays.toString(user.getNames()));
         assertEquals("[10, newName, newPass]", Arrays.toString(user.getValues()));
     }

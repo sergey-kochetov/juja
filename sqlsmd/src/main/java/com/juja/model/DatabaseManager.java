@@ -10,7 +10,7 @@ public interface DatabaseManager {
 
     Connection getConnection() throws SQLException;
 
-    DataSet[] getTableData(String tableName) throws SQLException;
+    List<DataSet> getTableData(String tableName) throws SQLException;
 
     int getSize(String tableName) throws SQLException;
 

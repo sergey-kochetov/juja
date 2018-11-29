@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,7 +51,9 @@ public class FindCommandTest {
         user2.put("c_name", "Eva");
         user2.put("c_password", "+++++");
 
-        DataSet[] data = new DataSet[] {user1, user2};
+        List<DataSet> data = new LinkedList<>();
+        data.add(user1);
+        data.add(user2);
         when(manager.getTableData("customer"))
                 .thenReturn(data);
 
@@ -110,7 +113,7 @@ public class FindCommandTest {
         when(manager.getTableColumns("customer"))
                 .thenReturn(list);
 
-        when(manager.getTableData("customer")).thenReturn(new DataSet[0]);
+        when(manager.getTableData("customer")).thenReturn(Collections.EMPTY_LIST);
 
         // when
         command.process("find|customer");
@@ -137,7 +140,9 @@ public class FindCommandTest {
         DataSet user2 = new DataSet();
         user2.put("id", 13);
 
-        DataSet[] data = new DataSet[] {user1, user2};
+        List<DataSet> data = new LinkedList<>();
+        data.add(user1);
+        data.add(user2);
         when(manager.getTableData("test")).thenReturn(data);
 
         // when

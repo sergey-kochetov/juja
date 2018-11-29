@@ -30,7 +30,7 @@ public class FindCommand implements Command {
         String tableName = data[1];
 
         List<String> tableColumns = manager.getTableColumns(tableName);
-        DataSet[] tableData = manager.getTableData(tableName);
+        List<DataSet> tableData = manager.getTableData(tableName);
 
         int[] lengthRow = lengthRowData(tableColumns);
 
@@ -53,7 +53,7 @@ public class FindCommand implements Command {
     }
 
 
-    private void printTable(DataSet[] tableData, int[] lengthRow) {
+    private void printTable(List<DataSet> tableData, int[] lengthRow) {
         for (DataSet aTableData : tableData) {
             printRow(aTableData, lengthRow);
         }

@@ -8,9 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class JDBCDatabaseManager implements DatabaseManager  {
-    private static final String SQL_SELECT_TABLE_NAME = "SELECT table_name FROM information_schema.tables " +
+    private static final String SELECT_TABLE_NAMES = "SELECT table_name FROM information_schema.tables " +
             "WHERE table_schema='public' AND table_type='BASE TABLE'";
-    private static final String SQL_SELECT_TABLE = "SELECT COUNT(*) FROM public.";
+    private static final String SELECT_SIZE_TABLE = "SELECT COUNT(*) FROM public.";
     private static final String URL_CONNECT_DB = "jdbc:postgresql://localhost:5432/";
     private static final String SQL_DELETE = "DELETE FROM public.";
     private static final String SQL_INSERT = "INSERT INTO public.";
@@ -54,18 +54,17 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     @Override
-    public DataSet[] getTableData(String tableName) throws SQLException {
+    public List<DataSet> getTableData(String tableName) throws SQLException {
         checkConnection();
         try (  Statement stmt = connection.createStatement();
                ResultSet rs = stmt.executeQuery("SELECT * FROM public." + tableName);
         ) {
             int size = getSize(tableName);
             ResultSetMetaData rsmd = rs.getMetaData();
-            DataSet[] result = new DataSet[size];
-            int index = 0;
+            List<DataSet> result = new LinkedList<>();
             while (rs.next()) {
                 DataSet dataSet = new DataSet();
-                result[index++] = dataSet;
+                result.add(dataSet);
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     dataSet.put(rsmd.getColumnName(i), rs.getObject(i));
                 }
@@ -78,7 +77,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public int getSize(String tableName) throws SQLException {
         checkConnection();
         try (Statement  stmt = connection.createStatement();
-             ResultSet rsCount = stmt.executeQuery(SQL_SELECT_TABLE + tableName);
+             ResultSet rsCount = stmt.executeQuery(SELECT_SIZE_TABLE + tableName);
         ) {
             rsCount.next();
             return rsCount.getInt(1);
@@ -89,7 +88,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public List<String> getTableNames() throws SQLException {
         checkConnection();
         try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(SQL_SELECT_TABLE_NAME);
+             ResultSet rs = stmt.executeQuery(SELECT_TABLE_NAMES);
         ) {
             List<String> tables = new LinkedList<>();
             while (rs.next()) {
