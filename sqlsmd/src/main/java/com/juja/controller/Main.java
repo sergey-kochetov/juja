@@ -6,7 +6,6 @@ import com.juja.view.Console;
 import com.juja.view.View;
 
 public class Main {
-
     public static void main(String[] args) {
         View view = new Console();
         DatabaseManager manager = new JDBCDatabaseManager();

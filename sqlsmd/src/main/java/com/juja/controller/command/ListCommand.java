@@ -3,7 +3,9 @@ package com.juja.controller.command;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
 public class ListCommand implements Command {
     private final View view;
@@ -20,10 +22,10 @@ public class ListCommand implements Command {
     }
 
     @Override
-    public void process(String command) {
-        String[] tableNames = manager.getTableNames();
+    public void process(String command) throws SQLException {
+        List<String> tableNames = manager.getTableNames();
 
-        String message = Arrays.toString(tableNames);
+        String message = tableNames.toString();
 
         view.write(message);
     }

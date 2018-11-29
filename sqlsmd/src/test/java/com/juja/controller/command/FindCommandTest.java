@@ -7,12 +7,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
-
-
-import static org.junit.Assert.assertEquals;
 
 public class FindCommandTest {
 
@@ -28,10 +30,15 @@ public class FindCommandTest {
     }
 
     @Test
-    public void testPrintTableData() {
+    public void testPrintTableData() throws SQLException {
         // given
+        List<String> list = new LinkedList<String>();
+        list.add("c_id");
+        list.add("c_name");
+        list.add("c_password");
+
         when(manager.getTableColumns("customer"))
-                .thenReturn(new String[] {"c_id", "c_name", "c_password"});
+                .thenReturn(list);
 
         DataSet user1 = new DataSet();
         user1.put("c_id", 12);
@@ -94,10 +101,14 @@ public class FindCommandTest {
     }
 
     @Test
-    public void testPrintEmptyTableData() {
+    public void testPrintEmptyTableData() throws SQLException {
         // given
+        List<String> list = new LinkedList<String>();
+        list.add("c_id");
+        list.add("c_name");
+        list.add("c_password");
         when(manager.getTableColumns("customer"))
-                .thenReturn(new String[]{"c_id", "c_name", "c_password"});
+                .thenReturn(list);
 
         when(manager.getTableData("customer")).thenReturn(new DataSet[0]);
 
@@ -113,10 +124,12 @@ public class FindCommandTest {
     }
 
     @Test
-    public void testPrintTableDataWithOneColumn() {
+    public void testPrintTableDataWithOneColumn() throws SQLException {
         // given
+        List<String> list = new LinkedList<String>();
+        list.add("c_id");
         when(manager.getTableColumns("test"))
-                .thenReturn(new String[]{"id"});
+                .thenReturn(list);
 
         DataSet user1 = new DataSet();
         user1.put("id", 12);
@@ -133,7 +146,7 @@ public class FindCommandTest {
         // then
         shouldPrint("[" +
                 "+-------+, " +
-                "|id     |, " +
+                "|c_id   |, " +
                 "+-------+, " +
                 "|12     |, " +
                 "|13     |, " +

@@ -3,8 +3,9 @@ package com.juja.model;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,24 +22,24 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws SQLException {
 //        try {
 //            DBinit.startUp();
 //        } catch (URISyntaxException | IOException e) {
 //            e.printStackTrace();
 //        }
         manager = getDatabaseManager();
-        Connection connection = manager.getConnection();
+        manager.connect("sqlsmd", "postgres", "postgres");
     }
 
     @Test
-    public void testGetAllTableNames() {
-        String[] tableNames = manager.getTableNames();
-        assertEquals("[customer]", Arrays.toString(tableNames));
+    public void testGetAllTableNames() throws SQLException {
+        List<String> tableNames = manager.getTableNames();
+        assertEquals("[customer]", tableNames.toString());
     }
 
     @Test
-    public void testGetTableData() {
+    public void testGetTableData() throws SQLException {
         // given
         String customer = "customer";
         manager.clear(customer);
@@ -60,22 +61,22 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
     }
 
     @Test
-    public void testUpdateTableData() {
+    public void testUpdateTableData() throws SQLException {
         // given
         String customer = "customer";
         manager.clear(customer);
 
         DataSet input = new DataSet();
-        input.put("c_id", 13);
-        input.put("c_name", "Stiven");
+        input.put("c_id", 10);
+        input.put("c_name", "name");
         input.put("c_password", "pass");
         manager.create(customer, input);
 
         // when
         DataSet newValue = new DataSet();
-        newValue.put("c_password", "pass2");
-        newValue.put("c_name", "Pup");
-        manager.update("customer", 13, newValue);
+        newValue.put("c_name", "newName");
+        newValue.put("c_password", "newPass");
+        manager.update("customer", 10, newValue);
 
         // then
         DataSet[] users = manager.getTableData("customer");
@@ -83,24 +84,24 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
 
         DataSet user = users[0];
         assertEquals("[c_id, c_name, c_password]", Arrays.toString(user.getNames()));
-        assertEquals("[13, Pup, pass2]", Arrays.toString(user.getValues()));
+        assertEquals("[10, newName, newPass]", Arrays.toString(user.getValues()));
     }
 
     @Test
-    public void testGetColumnNames() {
+    public void testGetColumnNames() throws SQLException {
         // given
         String customer = "customer";
         manager.clear(customer);
 
         // when
-        String[] columnNames = manager.getTableColumns(customer);
+        List<String> columnNames = manager.getTableColumns(customer);
 
         // then
-        assertEquals("[c_id, c_name, c_password]", Arrays.toString(columnNames));
+        assertEquals("[c_id, c_name, c_password]", columnNames.toString());
 
     }
     @Test
-    public void testIsConnected() {
+    public void testIsConnected() throws SQLException {
         assertEquals(true, manager.isConnected());
     }
 }

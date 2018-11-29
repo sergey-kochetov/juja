@@ -4,6 +4,7 @@ import com.juja.controller.command.*;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,9 +28,7 @@ public class MainController {
                 new CreateCommand(manager, view),
                 new FindCommand(manager, view),
                 new UnsupportedCommand(view)
-
         ));
-
     }
 
     public void run() {
@@ -37,11 +36,12 @@ public class MainController {
             doWork();
         } catch (ExitException e) {
             // do nothing
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
     }
 
-    private void doWork() {
+    private void doWork() throws SQLException {
         view.write("Welcome to sqlsmd.");
         view.write("Enter please connect|database|userName|password");
 

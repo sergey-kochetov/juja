@@ -3,25 +3,6 @@ package com.juja.model;
 import java.util.Arrays;
 
 public class DataSet {
-
-    static class Data {
-        private String name;
-        private Object value;
-
-        public Data(String name, Object value) {
-            this.name = name;
-            this.value = value;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-    }
-
     public Data[] data = new Data[100];
     public int freeIndex = 0;
 
@@ -72,8 +53,26 @@ public class DataSet {
 
     @Override
     public String toString() {
-        return "{" +
-                "names:" + Arrays.toString(getNames()) + ", " +
-                "values:" + Arrays.toString(getValues()) + "}";
+        return String.format("{names:%s, values:%s}",
+                Arrays.toString(getNames()),
+                Arrays.toString(getValues()));
+    }
+
+    private static class Data {
+        private String name;
+        private Object value;
+
+        public Data(String name, Object value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Object getValue() {
+            return value;
+        }
     }
 }

@@ -28,5 +28,4 @@ public class HelpCommand implements Command {
         view.write("\texit");
         view.write("\t\tfor exit program");
     }
-
 }

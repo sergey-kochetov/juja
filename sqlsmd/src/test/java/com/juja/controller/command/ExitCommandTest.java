@@ -4,6 +4,8 @@ import com.juja.view.View;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.sql.SQLException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -45,6 +47,8 @@ public class ExitCommandTest {
             fail("Expected ExitException");
         } catch (ExitException e) {
             // do nothing
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         // then

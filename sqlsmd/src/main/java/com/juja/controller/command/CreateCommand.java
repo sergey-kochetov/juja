@@ -4,6 +4,8 @@ import com.juja.model.DataSet;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
+import java.sql.SQLException;
+
 public class CreateCommand implements Command {
     private final View view;
     private final DatabaseManager manager;
@@ -12,14 +14,15 @@ public class CreateCommand implements Command {
         this.view = view;
         this.manager = manager;
     }
+
     @Override
     public boolean canProcess(String command) {
         return command.startsWith("create|");
     }
 
     @Override
-    public void process(String command) {
-        String[] data = command.split("\\|");
+    public void process(String command) throws SQLException {
+        String[] data = command.split("[|]");
         if (data.length  % 2 != 0) {
             throw new IllegalArgumentException("No valid data % 2 == 0");
         }
@@ -34,7 +37,7 @@ public class CreateCommand implements Command {
         }
         manager.create(tableName, dataSet);
 
-        view.write(String.format("data '%s' was successfully created in table '%s'", dataSet.toString(), tableName));
-
+        view.write(String.format("data '%s' was successfully created in table '%s'",
+                dataSet.toString(), tableName));
     }
 }
