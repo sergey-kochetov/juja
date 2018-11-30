@@ -57,11 +57,10 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         try (  Statement stmt = connection.createStatement();
                ResultSet rs = stmt.executeQuery("SELECT * FROM public." + tableName);
         ) {
-            //int size = getSize(tableName);
             ResultSetMetaData rsmd = rs.getMetaData();
             List<Map<String, Object>> result = new LinkedList<>();
             while (rs.next()) {
-                Map<String, Object> dataSet = new HashMap<>();
+                Map<String, Object> dataSet = new LinkedHashMap<>();
                 result.add(dataSet);
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     dataSet.put(rsmd.getColumnName(i), rs.getObject(i));

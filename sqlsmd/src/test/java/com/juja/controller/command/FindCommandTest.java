@@ -39,12 +39,12 @@ public class FindCommandTest {
         when(manager.getTableColumns("customer"))
                 .thenReturn(list);
 
-        Map<String, Object> user1 = new HashMap<>();
+        Map<String, Object> user1 = new LinkedHashMap<>();
         user1.put("c_id", 12);
         user1.put("c_name", "Stiven");
         user1.put("c_password", "*****");
 
-        Map<String, Object> user2 = new HashMap<>();
+        Map<String, Object> user2 = new LinkedHashMap<>();
         user2.put("c_id", 13);
         user2.put("c_name", "Eva");
         user2.put("c_password", "+++++");
@@ -132,10 +132,10 @@ public class FindCommandTest {
         when(manager.getTableColumns("test"))
                 .thenReturn(list);
 
-        Map<String, Object> user1 = new HashMap<>();
+        Map<String, Object> user1 = new LinkedHashMap<>();
         user1.put("id", 12);
 
-        Map<String, Object> user2 = new HashMap<>();
+        Map<String, Object> user2 = new LinkedHashMap<>();
         user2.put("id", 13);
 
         List<Map<String, Object>> data = new LinkedList<>();

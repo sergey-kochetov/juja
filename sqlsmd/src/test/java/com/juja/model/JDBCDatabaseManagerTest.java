@@ -4,10 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,7 +44,7 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         manager.clear(customer);
 
         // when
-        Map<String, Object> input = new HashMap<>();
+        Map<String, Object> input = new LinkedHashMap<>();
         input.put("c_id", 13);
         input.put("c_name", "Stiven");
         input.put("c_password", "pass");
@@ -58,8 +55,8 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         assertEquals(1, users.size());
 
         Map<String, Object> user = users.get(0);
-        assertEquals("[c_id, c_name, c_password]", user.keySet());
-        assertEquals("[13, Stiven, pass]", user.values());
+        assertEquals("[c_id, c_name, c_password]", user.keySet().toString());
+        assertEquals("[13, Stiven, pass]", user.values().toString());
     }
 
     @Test
@@ -68,14 +65,14 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         String customer = "customer";
         manager.clear(customer);
 
-        Map<String, Object> input = new HashMap<>();
+        Map<String, Object> input = new LinkedHashMap<>();
         input.put("c_id", 10);
         input.put("c_name", "name");
         input.put("c_password", "pass");
         manager.create(customer, input);
 
         // when
-        Map<String, Object> newValue = new HashMap<>();
+        Map<String, Object> newValue = new LinkedHashMap<>();
         newValue.put("c_name", "newName");
         newValue.put("c_password", "newPass");
         manager.update("customer", 10, newValue);
@@ -85,8 +82,8 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         assertEquals(1, users.size());
 
         Map<String, Object> user = users.get(0);
-        assertEquals("[c_id, c_name, c_password]", user.keySet());
-        assertEquals("[10, newName, newPass]", user.values());
+        assertEquals("[c_id, c_name, c_password]", user.keySet().toString());
+        assertEquals("[10, newName, newPass]", user.values().toString());
     }
 
     @Test

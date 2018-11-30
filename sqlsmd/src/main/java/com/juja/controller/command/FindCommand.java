@@ -60,11 +60,12 @@ public class FindCommand implements Command {
     }
 
     private void printRow(Map<String, Object> row, List<Integer> lengthRow) {
-        List<Object> values = (List<Object>) row.values();
-        StringBuilder result = new StringBuilder("|");
 
-        for (int i = 0; i < values.size(); i++) {
-            result.append(Strings.padEnd(values.get(i).toString(), lengthRow.get(i), ' ')).append("|");
+
+        StringBuilder result = new StringBuilder("|");
+        int index = 0;
+        for (Map.Entry<String, Object> p : row.entrySet()) {
+            result.append(Strings.padEnd(p.getValue().toString(), lengthRow.get(index++), ' ')).append("|");
         }
         view.write(result.toString());
     }

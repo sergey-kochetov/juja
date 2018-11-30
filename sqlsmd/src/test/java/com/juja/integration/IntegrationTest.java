@@ -169,9 +169,9 @@ public class IntegrationTest {
                 "Enter command (or 'help'): \r\n" +
                 "table 'customer' was successfully cleared.\r\n" +
                 "Enter command (or 'help'): \r\n" +
-                "data '{names:[c_id, c_name, c_password], values:[13, adam, ***]}' was successfully created in table 'customer'\r\n" +
+                "data '{c_id=13, c_name=adam, c_password=***}' was successfully created in table 'customer'\r\n" +
                 "Enter command (or 'help'): \r\n" +
-                "data '{names:[c_id, c_name, c_password], values:[14, eva, +++]}' was successfully created in table 'customer'\r\n" +
+                "data '{c_id=14, c_name=eva, c_password=+++}' was successfully created in table 'customer'\r\n" +
                 "Enter command (or 'help'): \r\n" +
                 "+-------+---------------+---------------+\r\n" +
                 "|c_id   |c_name         |c_password     |\r\n" +

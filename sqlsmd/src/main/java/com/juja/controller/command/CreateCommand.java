@@ -4,7 +4,7 @@ import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CreateCommand implements Command {
@@ -29,7 +29,7 @@ public class CreateCommand implements Command {
         }
         String tableName = data[1];
 
-        Map<String, Object> dataSet = new HashMap<>();
+        Map<String, Object> dataSet = new LinkedHashMap<>();
         for (int i = 1; i < data.length / 2; i++) {
             String columnName = data[i * 2];
             String value = data[i * 2 + 1];
