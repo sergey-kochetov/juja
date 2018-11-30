@@ -3,9 +3,7 @@ package com.juja.model;
 import com.juja.config.Config;
 
 import java.sql.*;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class JDBCDatabaseManager implements DatabaseManager  {
     private static final String SELECT_TABLE_NAMES = "SELECT table_name FROM information_schema.tables " +
@@ -54,16 +52,16 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     @Override
-    public List<DataSet> getTableData(String tableName) throws SQLException {
+    public List<Map<String, Object>> getTableData(String tableName) throws SQLException {
         checkConnection();
         try (  Statement stmt = connection.createStatement();
                ResultSet rs = stmt.executeQuery("SELECT * FROM public." + tableName);
         ) {
-            int size = getSize(tableName);
+            //int size = getSize(tableName);
             ResultSetMetaData rsmd = rs.getMetaData();
-            List<DataSet> result = new LinkedList<>();
+            List<Map<String, Object>> result = new LinkedList<>();
             while (rs.next()) {
-                DataSet dataSet = new DataSet();
+                Map<String, Object> dataSet = new HashMap<>();
                 result.add(dataSet);
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     dataSet.put(rsmd.getColumnName(i), rs.getObject(i));
@@ -107,7 +105,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     @Override
-    public void create(String tableName, DataSet input) throws SQLException {
+    public void create(String tableName, Map<String, Object> input) throws SQLException {
         checkConnection();
         try ( Statement stmt = connection.createStatement()) {
             String tableNames = getNameFormated(input, "%s,");
@@ -119,7 +117,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     @Override
-    public void update(String tableName, int id, DataSet newValue) throws SQLException {
+    public void update(String tableName, int id, Map<String, Object> newValue) throws SQLException {
         checkConnection();
         String tableNames = getNameFormated(newValue, "%s = ?,");
         String nameId = "c_id";
@@ -128,7 +126,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
 
         try (PreparedStatement ps = connection.prepareStatement(sql);) {
             int index = 1;
-            for (Object value : newValue.getValues()) {
+            for (Object value : newValue.values()) {
                 ps.setObject(index, value);
                 index++;
             }
@@ -163,18 +161,18 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         return connection != null;
     }
 
-    private String getNameFormated(DataSet newValue, String format) {
+    private String getNameFormated(Map<String, Object> newValue, String format) {
         StringBuilder string = new StringBuilder();
-        for (String name : newValue.getNames()) {
+        for (String name : newValue.keySet()) {
             string.append(String.format(format, name));
         }
         string = new StringBuilder(string.substring(0, string.length() - 1));
         return string.toString();
     }
 
-    private String getValuesFormated(DataSet input, String format) {
+    private String getValuesFormated(Map<String, Object> input, String format) {
         StringBuilder values = new StringBuilder();
-        for (Object value: input.getValues()) {
+        for (Object value: input.values()) {
             values.append(String.format(format, value));
         }
         values = new StringBuilder(values.substring(0, values.length() - 1));

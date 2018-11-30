@@ -1,6 +1,6 @@
 package com.juja.controller.command;
 
-import com.juja.model.DataSet;
+
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 import org.junit.Before;
@@ -8,9 +8,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -41,17 +39,17 @@ public class FindCommandTest {
         when(manager.getTableColumns("customer"))
                 .thenReturn(list);
 
-        DataSet user1 = new DataSet();
+        Map<String, Object> user1 = new HashMap<>();
         user1.put("c_id", 12);
         user1.put("c_name", "Stiven");
         user1.put("c_password", "*****");
 
-        DataSet user2 = new DataSet();
+        Map<String, Object> user2 = new HashMap<>();
         user2.put("c_id", 13);
         user2.put("c_name", "Eva");
         user2.put("c_password", "+++++");
 
-        List<DataSet> data = new LinkedList<>();
+        List<Map<String, Object>> data = new LinkedList<>();
         data.add(user1);
         data.add(user2);
         when(manager.getTableData("customer"))
@@ -134,13 +132,13 @@ public class FindCommandTest {
         when(manager.getTableColumns("test"))
                 .thenReturn(list);
 
-        DataSet user1 = new DataSet();
+        Map<String, Object> user1 = new HashMap<>();
         user1.put("id", 12);
 
-        DataSet user2 = new DataSet();
+        Map<String, Object> user2 = new HashMap<>();
         user2.put("id", 13);
 
-        List<DataSet> data = new LinkedList<>();
+        List<Map<String, Object>> data = new LinkedList<>();
         data.add(user1);
         data.add(user2);
         when(manager.getTableData("test")).thenReturn(data);

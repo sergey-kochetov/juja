@@ -1,10 +1,11 @@
 package com.juja.controller.command;
 
-import com.juja.model.DataSet;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateCommand implements Command {
     private final View view;
@@ -28,7 +29,7 @@ public class CreateCommand implements Command {
         }
         String tableName = data[1];
 
-        DataSet dataSet = new DataSet();
+        Map<String, Object> dataSet = new HashMap<>();
         for (int i = 1; i < data.length / 2; i++) {
             String columnName = data[i * 2];
             String value = data[i * 2 + 1];

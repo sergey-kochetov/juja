@@ -3,6 +3,7 @@ package com.juja.model;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public interface DatabaseManager {
 
@@ -10,7 +11,7 @@ public interface DatabaseManager {
 
     Connection getConnection() throws SQLException;
 
-    List<DataSet> getTableData(String tableName) throws SQLException;
+    List<Map<String, Object>> getTableData(String tableName) throws SQLException;
 
     int getSize(String tableName) throws SQLException;
 
@@ -18,9 +19,9 @@ public interface DatabaseManager {
 
     void clear(String tableName) throws SQLException;
 
-    void create(String tableName, DataSet input) throws SQLException;
+    void create(String tableName, Map<String, Object> input) throws SQLException;
 
-    void update(String tableName, int id, DataSet newValue) throws SQLException;
+    void update(String tableName, int id, Map<String, Object> newValue) throws SQLException;
 
     List<String> getTableColumns(String tableName) throws SQLException;
 
