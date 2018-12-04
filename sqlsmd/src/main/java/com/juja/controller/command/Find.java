@@ -21,7 +21,11 @@ public class Find implements Command {
 
     @Override
     public boolean canProcess(String command) {
-        return command.startsWith("find|");
+        String[] split = format().split("[|]");
+        if (split.length == 1) {
+            return false;
+        }
+        return command.startsWith(format().split("[|]")[0]);
     }
 
     @Override
@@ -36,6 +40,16 @@ public class Find implements Command {
 
         printHeader(tableColumns, lengthRow);
         printTable(tableData, lengthRow);
+    }
+
+    @Override
+    public String format() {
+        return "find|tableName";
+    }
+
+    @Override
+    public String description() {
+        return "for see table 'tableName'";
     }
 
     private List<Integer> lengthRowData(List<String> heads) {
@@ -90,4 +104,5 @@ public class Find implements Command {
         }
         view.write(result.toString());
     }
+
 }

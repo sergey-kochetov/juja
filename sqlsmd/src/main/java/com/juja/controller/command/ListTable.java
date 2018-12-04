@@ -4,7 +4,6 @@ import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 public class ListTable implements Command {
@@ -18,7 +17,7 @@ public class ListTable implements Command {
 
     @Override
     public boolean canProcess(String command) {
-        return command.equals("list");
+        return command.equals(format());
     }
 
     @Override
@@ -28,5 +27,15 @@ public class ListTable implements Command {
         String message = tableNames.toString();
 
         view.write(message);
+    }
+
+    @Override
+    public String format() {
+        return "list";
+    }
+
+    @Override
+    public String description() {
+        return "for get list database";
     }
 }

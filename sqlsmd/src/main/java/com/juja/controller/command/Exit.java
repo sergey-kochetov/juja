@@ -11,12 +11,22 @@ public class Exit implements Command {
 
     @Override
     public boolean canProcess(String command) {
-        return command.equals("exit");
+        return command.equals(format());
     }
 
     @Override
     public void process(String command) {
         view.write("bye...");
         throw new ExitException();
+    }
+
+    @Override
+    public String format() {
+        return "exit";
+    }
+
+    @Override
+    public String description() {
+        return "for exit program";
     }
 }

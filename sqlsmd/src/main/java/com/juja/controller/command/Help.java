@@ -11,7 +11,7 @@ public class Help implements Command {
 
     @Override
     public boolean canProcess(String command) {
-        return command.equals("help");
+        return command.equals(format());
     }
 
     @Override
@@ -27,5 +27,15 @@ public class Help implements Command {
         view.write("\t\tfor see table 'tableName'");
         view.write("\texit");
         view.write("\t\tfor exit program");
+    }
+
+    @Override
+    public String format() {
+        return "help";
+    }
+
+    @Override
+    public String description() {
+        return "this page";
     }
 }

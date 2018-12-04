@@ -21,4 +21,14 @@ public class isConnect implements Command {
     public void process(String command) {
         view.write("Enter please connect|database|userName|password");
     }
+
+    @Override
+    public String format() {
+        return "";
+    }
+
+    @Override
+    public String description() {
+        return "";
+    }
 }

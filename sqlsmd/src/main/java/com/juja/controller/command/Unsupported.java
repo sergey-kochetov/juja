@@ -18,4 +18,14 @@ public class Unsupported implements Command {
     public void process(String command) {
         view.write("command not exist, try again.");
     }
+
+    @Override
+    public String format() {
+        return "";
+    }
+
+    @Override
+    public String description() {
+        return "";
+    }
 }

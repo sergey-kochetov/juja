@@ -89,7 +89,7 @@ public class FindTest {
         boolean canProcess = command.canProcess("find");
 
         // then
-        assertFalse(canProcess);
+        assertEquals(true, canProcess);
     }
 
     @Test

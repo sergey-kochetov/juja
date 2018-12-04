@@ -23,10 +23,20 @@ public class Clear implements Command {
     public void process(String command) throws SQLException {
         String[] data = command.split("\\|");
         if (data.length != 2) {
-            throw new IllegalArgumentException("format clear|tableName, but was: " + command);
+            throw new IllegalArgumentException(String.format("format %s, but was: %s", format(), command));
         }
         manager.clear(data[1]);
 
-        view.write(String.format("table '%s' was successfully cleared.", data[1]));
+        view.write(String.format("table '%s' was successfully cleared", data[1]));
+    }
+
+    @Override
+    public String format() {
+        return "clear|tableName";
+    }
+
+    @Override
+    public String description() {
+        return "database cleaning";
     }
 }

@@ -38,4 +38,14 @@ public class Connect implements Command {
 
             view.write("Connect Successful");
     }
+
+    @Override
+    public String format() {
+        return "connect|database|user|password";
+    }
+
+    @Override
+    public String description() {
+        return "for connect to database";
+    }
 }

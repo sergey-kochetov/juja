@@ -15,10 +15,14 @@ public class Create implements Command {
         this.view = view;
         this.manager = manager;
     }
-
+    //create|customer|c_id|10|
     @Override
     public boolean canProcess(String command) {
-        return command.startsWith("create|");
+        String[] split = format().split("[|]");
+        if (split.length == 1) {
+            return false;
+        }
+        return command.startsWith(split[0]);
     }
 
     @Override
@@ -40,5 +44,15 @@ public class Create implements Command {
 
         view.write(String.format("data '%s' was successfully created in table '%s'",
                 dataSet.toString(), tableName));
+    }
+
+    @Override
+    public String format() {
+        return "create|...";
+    }
+
+    @Override
+    public String description() {
+        return "create data for database";
     }
 }

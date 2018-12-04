@@ -87,7 +87,7 @@ public class ClearTest {
         command.process("clear|customer");
 
         // then
-        shouldPrint("[table 'customer' was successfully cleared.]");
+        shouldPrint("[table 'customer' was successfully cleared]");
     }
 
     @Test
@@ -121,7 +121,7 @@ public class ClearTest {
         command.process("clear|customer");
 
         // then
-        shouldPrint("[table 'customer' was successfully cleared.]");
+        shouldPrint("[table 'customer' was successfully cleared]");
     }
 
     private void shouldPrint(String expected) {
