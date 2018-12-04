@@ -4,6 +4,7 @@ import com.juja.config.Config;
 
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class JDBCDatabaseManager implements DatabaseManager  {
 
@@ -105,6 +106,25 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         }
     }
 
+    public void delete(String tableName, Map<String, Object> data) throws SQLException {
+        checkConnection();
+        String key = "(" + data.entrySet().stream().map((entry) ->
+                entry.getKey())
+                .collect(Collectors.joining(",")) + ")";
+        String value =  "(" + data.entrySet().stream().map((entry) ->
+                entry.getValue().toString())
+                .collect(Collectors.joining(",")) + ")";
+
+        String sql = "DELETE FROM ? WHERE ? = ?;";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, tableName);
+            stmt.setString(2, key);
+            stmt.setString(3, value);
+
+            stmt.executeUpdate();
+        }
+    }
+
     @Override
     public void create(String tableName, Map<String, Object> input) throws SQLException {
         checkConnection();
@@ -112,7 +132,6 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         String values = getValuesFormated(input, "'%s',");
 
         try ( Statement stmt = connection.createStatement()) {
-
             stmt.executeUpdate(SQL_INSERT + tableName + " (" + tableNames + ")" +
                     "VALUES (" + values + ")");
         }
@@ -125,7 +144,6 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         String nameId = "c_id";
         String sql = "UPDATE public." + tableName + " SET " + tableNames +
                 " WHERE " + nameId + "= ?";
-
         try (PreparedStatement ps = connection.prepareStatement(sql);) {
             int index = 1;
             for (Object value : newValue.values()) {
@@ -186,6 +204,4 @@ public class JDBCDatabaseManager implements DatabaseManager  {
             throw new SQLException("no connect to database.");
         }
     }
-
-
 }

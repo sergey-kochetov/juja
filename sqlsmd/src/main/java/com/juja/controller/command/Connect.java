@@ -24,6 +24,9 @@ public class Connect implements Command {
 
     @Override
     public void process(String command) throws SQLException {
+        if (canProcess(command)) {
+            manager.defaultConnect();
+        } else {
             String[] data = command.split("[|]");
             if (data.length != SPLIT) {
                 throw new IllegalArgumentException(String.format(
@@ -35,8 +38,8 @@ public class Connect implements Command {
             String password = data[3];
 
             manager.connect(databaseName, userName, password);
-
-            view.write("Connect Successful");
+        }
+        view.write("Connect Successful");
     }
 
     @Override

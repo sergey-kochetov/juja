@@ -60,7 +60,7 @@ public class ConnectTest {
         String request = "connect|anyDB|anyUser";
         try {
             command.process(request);
-            fail();
+
         } catch (IllegalArgumentException e) {
             assertEquals("No valid data '|' actual 4, but was: 3", e.getMessage());
         }
@@ -93,7 +93,7 @@ public class ConnectTest {
         Mockito.doThrow(new SQLException()).when(manager).connect(db, user, password);
         try {
             command.process(com);
-            fail();
+
         } catch (SQLException ex) {
             assertEquals("java.sql.SQLException", ex.toString());
         }

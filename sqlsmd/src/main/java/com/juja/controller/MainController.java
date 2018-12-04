@@ -18,6 +18,10 @@ public class MainController {
         this.view = view;
         this.manager = manager;
         this.commands = new LinkedList<>();
+        initCommands();
+    }
+
+    private void initCommands() {
         commands.addAll(Arrays.asList(
                 new Connect(manager, view),
                 new Help(view, commands),
@@ -80,4 +84,7 @@ public class MainController {
         view.write("Try again.");
     }
 
+    public List<Command> getCommands() {
+        return commands;
+    }
 }

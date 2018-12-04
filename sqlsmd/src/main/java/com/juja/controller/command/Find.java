@@ -21,11 +21,7 @@ public class Find implements Command {
 
     @Override
     public boolean canProcess(String command) {
-        String[] split = format().split("[|]");
-        if (split.length == 1) {
-            return false;
-        }
-        return command.startsWith(format().split("[|]")[0]);
+        return command.startsWith("find|");
     }
 
     @Override
