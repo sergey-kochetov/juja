@@ -63,12 +63,10 @@ public class CreateTest {
         list.add("c_password");
         when(manager.getTableColumns("customer"))
                 .thenReturn(list);
-
         when(manager.getTableData("customer")).thenReturn(Collections.EMPTY_LIST);
 
         // when
         command.process("create|customer|c_id|1|c_name|name1|c_password|+++++");
-//        command.process("create|customer|c_id|2|c_name|name2|c_password|*****");
 
         // then
         shouldPrint("['{c_id=1, c_name=name1, c_password=+++++}' " +
