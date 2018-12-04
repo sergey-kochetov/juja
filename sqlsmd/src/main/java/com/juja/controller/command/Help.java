@@ -2,10 +2,10 @@ package com.juja.controller.command;
 
 import com.juja.view.View;
 
-public class HelpCommand implements Command {
+public class Help implements Command {
     private final View view;
 
-    public HelpCommand(View view) {
+    public Help(View view) {
         this.view = view;
     }
 

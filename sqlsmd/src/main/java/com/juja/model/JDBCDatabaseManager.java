@@ -8,16 +8,18 @@ import java.util.*;
 public class JDBCDatabaseManager implements DatabaseManager  {
     private static final String SELECT_TABLE_NAMES = "SELECT table_name FROM information_schema.tables " +
             "WHERE table_schema='public' AND table_type='BASE TABLE'";
-    private static final String SELECT_SIZE_TABLE = "SELECT COUNT(*) FROM public.";
+    private static final String SELECT_SIZE_TABLE = "SELECT COUNT(*) FROM ";
     private static final String URL_CONNECT_DB = "jdbc:postgresql://localhost:5432/";
-    private static final String SQL_DELETE = "DELETE FROM public.";
-    private static final String SQL_INSERT = "INSERT INTO public.";
+    private static final String SQL_DELETE = "DELETE FROM ";
+    private static final String SQL_INSERT = "INSERT INTO ";
     private static final String SQL_GET_TABLE_COLUMNS = "SELECT * FROM information_schema.columns " +
             "WHERE table_schema=? AND table_name = ?";
+    private static final String SQL_CLEAR = "TRUNCATE ";
 
     private Connection connection;
 
-    private void defaultConnect() {
+    @Override
+    public void defaultConnect() throws SQLException {
         if (!isConnected()) {
             try {
                 connection = DriverManager.getConnection(
@@ -99,7 +101,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public void clear(String tableName) throws SQLException {
         checkConnection();
         try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(SQL_DELETE + tableName);
+            stmt.executeUpdate(SQL_CLEAR + tableName);
         }
     }
 

@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-public class ListCommand implements Command {
+public class ListTable implements Command {
     private final View view;
     private final DatabaseManager manager;
 
-    public ListCommand(DatabaseManager manager, View view) {
+    public ListTable(DatabaseManager manager, View view) {
         this.view = view;
         this.manager = manager;
     }

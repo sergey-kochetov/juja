@@ -8,13 +8,13 @@ import com.juja.view.View;
 import java.sql.SQLException;
 import java.util.*;
 
-public class FindCommand implements Command {
+public class Find implements Command {
     private static final int MIN_LENGTH = 15;
 
     private final DatabaseManager manager;
     private final View view;
 
-    public FindCommand(DatabaseManager manager, View view) {
+    public Find(DatabaseManager manager, View view) {
         this.manager = manager;
         this.view = view;
     }

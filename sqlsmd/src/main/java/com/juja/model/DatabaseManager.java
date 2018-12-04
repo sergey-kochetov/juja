@@ -7,6 +7,8 @@ import java.util.Map;
 
 public interface DatabaseManager {
 
+    void defaultConnect() throws SQLException;
+
     void connect(String database, String userName, String password) throws SQLException;
 
     Connection getConnection() throws SQLException;

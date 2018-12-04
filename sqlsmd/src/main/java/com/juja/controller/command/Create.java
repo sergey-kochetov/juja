@@ -1,17 +1,17 @@
 package com.juja.controller.command;
 
+import com.juja.controller.UtilsCommand;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CreateCommand implements Command {
+public class Create implements Command {
     private final View view;
     private final DatabaseManager manager;
 
-    public CreateCommand(DatabaseManager manager, View view) {
+    public Create(DatabaseManager manager, View view) {
         this.view = view;
         this.manager = manager;
     }
@@ -29,7 +29,7 @@ public class CreateCommand implements Command {
         }
         String tableName = data[1];
 
-        Map<String, Object> dataSet = new LinkedHashMap<>();
+        Map<String, Object> dataSet = UtilsCommand.getDataMap();
         for (int i = 1; i < data.length / 2; i++) {
             String columnName = data[i * 2];
             String value = data[i * 2 + 1];

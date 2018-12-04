@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
-public class FindCommandTest {
+public class FindTest {
 
     private DatabaseManager manager;
     private View view;
@@ -25,7 +25,7 @@ public class FindCommandTest {
     public void setup() {
         manager = mock(DatabaseManager.class);
         view = mock(View.class);
-        command = new FindCommand(manager, view);
+        command = new Find(manager, view);
     }
 
     @Test

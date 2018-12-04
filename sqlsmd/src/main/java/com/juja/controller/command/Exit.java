@@ -2,20 +2,21 @@ package com.juja.controller.command;
 
 import com.juja.view.View;
 
-public class UnsupportedCommand implements Command {
-    private final View view;
+public class Exit implements Command {
+    private View view;
 
-    public UnsupportedCommand(View view) {
+    public Exit(View view) {
         this.view = view;
     }
 
     @Override
     public boolean canProcess(String command) {
-        return true;
+        return command.equals("exit");
     }
 
     @Override
     public void process(String command) {
-        view.write("command not exist, try again.");
+        view.write("bye...");
+        throw new ExitException();
     }
 }

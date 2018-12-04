@@ -20,14 +20,14 @@ public class MainController {
         this.commands = new LinkedList<>();
         commands.addAll(Arrays.asList(
                 new Connect(manager, view),
-                new HelpCommand(view),
-                new ExitCommand(view),
+                new Help(view),
+                new Exit(view),
                 new isConnect(manager, view),
-                new ListCommand(manager, view),
-                new ClearCommand(manager, view),
-                new CreateCommand(manager, view),
-                new FindCommand(manager, view),
-                new UnsupportedCommand(view)
+                new ListTable(manager, view),
+                new Clear(manager, view),
+                new Create(manager, view),
+                new Find(manager, view),
+                new Unsupported(view)
         ));
     }
 

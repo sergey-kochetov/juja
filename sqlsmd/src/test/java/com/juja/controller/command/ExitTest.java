@@ -9,14 +9,14 @@ import java.sql.SQLException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ExitCommandTest {
+public class ExitTest {
 
     private View view = Mockito.mock(View.class);
 
     @Test
     public void testCanProcessExitStringValid() {
         // given
-        Command command = new ExitCommand(view);
+        Command command = new Exit(view);
 
         //when
         boolean canProcess = command.canProcess("exit");
@@ -24,10 +24,11 @@ public class ExitCommandTest {
         // then
         assertEquals(true, canProcess);
     }
+
     @Test
     public void testCanProcessExitStringNoValid() {
         // given
-        Command command = new ExitCommand(view);
+        Command command = new Exit(view);
 
         //when
         boolean canProcess = command.canProcess("no_exit");
@@ -39,7 +40,7 @@ public class ExitCommandTest {
     @Test
     public void testProcessExitCommand_throwExitException() {
         // given
-        Command command = new ExitCommand(view);
+        Command command = new Exit(view);
 
         //when
         try {
