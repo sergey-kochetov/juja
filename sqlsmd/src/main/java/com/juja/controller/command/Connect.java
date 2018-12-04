@@ -41,7 +41,7 @@ public class Connect implements Command {
 
     @Override
     public String format() {
-        return "connect|database|user|password";
+        return "connect|database|userName|password";
     }
 
     @Override

@@ -2,11 +2,15 @@ package com.juja.controller.command;
 
 import com.juja.view.View;
 
+import java.util.List;
+
 public class Help implements Command {
     private final View view;
+    private List<Command> commands;
 
-    public Help(View view) {
+    public Help(View view, List<Command> commands) {
         this.view = view;
+        this.commands = commands;
     }
 
     @Override
@@ -17,16 +21,12 @@ public class Help implements Command {
     @Override
     public void process(String command) {
         view.write("Existing commands");
-        view.write("\tconnect|databaseName|userName|password");
-        view.write("\t\tfor connect to database");
-        view.write("\thelp");
-        view.write("\t\tthis page");
-        view.write("\tlist");
-        view.write("\t\tfor get list database");
-        view.write("\tfind|tableName");
-        view.write("\t\tfor see table 'tableName'");
-        view.write("\texit");
-        view.write("\t\tfor exit program");
+        for (Command comm : commands ) {
+            if (!comm.description().isEmpty() || !comm.format().isEmpty()) {
+                view.write("\t" + comm.format());
+                view.write("\t\t" + comm.description());
+            }
+        }
     }
 
     @Override

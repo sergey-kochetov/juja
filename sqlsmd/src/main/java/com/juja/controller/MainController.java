@@ -20,7 +20,7 @@ public class MainController {
         this.commands = new LinkedList<>();
         commands.addAll(Arrays.asList(
                 new Connect(manager, view),
-                new Help(view),
+                new Help(view, commands),
                 new Exit(view),
                 new isConnect(manager, view),
                 new ListTable(manager, view),

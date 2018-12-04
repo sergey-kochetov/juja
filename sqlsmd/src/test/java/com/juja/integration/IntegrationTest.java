@@ -53,20 +53,24 @@ public class IntegrationTest {
 
         // then
         assertEquals("Welcome to sqlsmd.\r\n" +
-                "Enter please connect|database|userName|password\r\n" +
-                "Existing commands\r\n" +
-                "\tconnect|databaseName|userName|password\r\n" +
-                "\t\tfor connect to database\r\n" +
-                "\thelp\r\n" +
-                "\t\tthis page\r\n" +
-                "\tlist\r\n" +
-                "\t\tfor get list database\r\n" +
-                "\tfind|tableName\r\n" +
-                "\t\tfor see table 'tableName'\r\n" +
-                "\texit\r\n" +
-                "\t\tfor exit program\r\n" +
-                "Enter command (or 'help'): \r\n" +
-                "bye...\r\n", getData());
+                        "Enter please connect|database|userName|password\r\n" +
+                        "Existing commands\r\n" +
+                        "\tconnect|database|userName|password\r\n" +
+                        "\t\tfor connect to database\r\n" +
+                        "\thelp\r\n" +
+                        "\t\tthis page\r\n" +
+                        "\texit\r\n" +
+                        "\t\tfor exit program\r\n" +
+                        "\tlist\r\n" +
+                        "\t\tfor get list database\r\n" +
+                        "\tclear|tableName\r\n" +
+                        "\t\tdatabase cleaning\r\n" +
+                        "\tcreate|database|row1|param1|...|rowN|paramN\r\n" +
+                        "\t\tcreate data for database\r\n" +
+                        "\tfind|tableName\r\n" +
+                        "\t\tfor see table 'tableName'\r\n" +
+                        "Enter command (or 'help'): \r\n" +
+                        "bye...\r\n", getData().toString());
     }
     @Test
     public void testListAndExit(){
@@ -140,7 +144,7 @@ public class IntegrationTest {
                 "Connect Successful\r\n" +
                 "Enter command (or 'help'): \r\n" +
                 "table 'customer' was successfully cleared\r\n" +
-                        "Enter command (or 'help'): \r\n" +
+                "Enter command (or 'help'): \r\n" +
                 "+-------+---------------+---------------+\r\n" +
                 "|c_id   |c_name         |c_password     |\r\n" +
                 "+-------+---------------+---------------+\r\n" +
@@ -169,9 +173,9 @@ public class IntegrationTest {
                 "Enter command (or 'help'): \r\n" +
                 "table 'customer' was successfully cleared\r\n" +
                 "Enter command (or 'help'): \r\n" +
-                "data '{c_id=13, c_name=adam, c_password=***}' was successfully created in table 'customer'\r\n" +
+                "'{c_id=13, c_name=adam, c_password=***}' was successfully created in table 'customer'\r\n" +
                 "Enter command (or 'help'): \r\n" +
-                "data '{c_id=14, c_name=eva, c_password=+++}' was successfully created in table 'customer'\r\n" +
+                "'{c_id=14, c_name=eva, c_password=+++}' was successfully created in table 'customer'\r\n" +
                 "Enter command (or 'help'): \r\n" +
                 "+-------+---------------+---------------+\r\n" +
                 "|c_id   |c_name         |c_password     |\r\n" +

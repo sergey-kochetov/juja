@@ -6,10 +6,13 @@ import java.sql.*;
 import java.util.*;
 
 public class JDBCDatabaseManager implements DatabaseManager  {
+
+    private static final String URL_CONNECT_DB = "jdbc:postgresql://localhost:5432/";
+
     private static final String SELECT_TABLE_NAMES = "SELECT table_name FROM information_schema.tables " +
             "WHERE table_schema='public' AND table_type='BASE TABLE'";
     private static final String SELECT_SIZE_TABLE = "SELECT COUNT(*) FROM ";
-    private static final String URL_CONNECT_DB = "jdbc:postgresql://localhost:5432/";
+
     private static final String SQL_DELETE = "DELETE FROM ";
     private static final String SQL_INSERT = "INSERT INTO ";
     private static final String SQL_GET_TABLE_COLUMNS = "SELECT * FROM information_schema.columns " +
@@ -21,14 +24,11 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     @Override
     public void defaultConnect() throws SQLException {
         if (!isConnected()) {
-            try {
-                connection = DriverManager.getConnection(
-                        Config.getProperty(Config.DB_URL),
-                        Config.getProperty(Config.DB_LOGIN),
-                        Config.getProperty(Config.DB_PASSWORD));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            connection = DriverManager.getConnection(
+                    Config.getProperty(Config.DB_URL),
+                    Config.getProperty(Config.DB_LOGIN),
+                    Config.getProperty(Config.DB_PASSWORD));
+
         }
     }
 
@@ -41,7 +41,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
                     password);
         } catch (SQLException e) {
             connection.close();
-            throw new RuntimeException(
+            throw new SQLException(
                     String.format("Cant get connection for model:%s user:%s",
                             database, userName), e);
         }
@@ -108,9 +108,10 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     @Override
     public void create(String tableName, Map<String, Object> input) throws SQLException {
         checkConnection();
+        String tableNames = getNameFormated(input, "%s,");
+        String values = getValuesFormated(input, "'%s',");
+
         try ( Statement stmt = connection.createStatement()) {
-            String tableNames = getNameFormated(input, "%s,");
-            String values = getValuesFormated(input, "'%s',");
 
             stmt.executeUpdate(SQL_INSERT + tableName + " (" + tableNames + ")" +
                     "VALUES (" + values + ")");

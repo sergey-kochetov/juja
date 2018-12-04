@@ -42,13 +42,13 @@ public class Create implements Command {
         }
         manager.create(tableName, dataSet);
 
-        view.write(String.format("data '%s' was successfully created in table '%s'",
+        view.write(String.format("'%s' was successfully created in table '%s'",
                 dataSet.toString(), tableName));
     }
 
     @Override
     public String format() {
-        return "create|...";
+        return "create|database|row1|param1|...|rowN|paramN";
     }
 
     @Override
