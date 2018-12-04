@@ -15,7 +15,7 @@ public class Create implements Command {
         this.view = view;
         this.manager = manager;
     }
-    //create|customer|c_id|10|
+
     @Override
     public boolean canProcess(String command) {
         String[] split = format().split("[|]");
