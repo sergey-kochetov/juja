@@ -24,7 +24,9 @@ public class Connect implements Command {
 
     @Override
     public void process(String command) throws SQLException {
-        if (canProcess(command)) {
+        if (!canProcess(command)) {
+            return;
+        } else if ("connect|".equals(command)) {
             manager.defaultConnect();
         } else {
             String[] data = command.split("[|]");

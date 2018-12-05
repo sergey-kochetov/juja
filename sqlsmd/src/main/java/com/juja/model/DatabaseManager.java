@@ -21,11 +21,15 @@ public interface DatabaseManager {
 
     void clear(String tableName) throws SQLException;
 
+    void delete(String tableName) throws SQLException;
+
     void create(String tableName, Map<String, Object> input) throws SQLException;
 
     void update(String tableName, int id, Map<String, Object> newValue) throws SQLException;
 
     List<String> getTableColumns(String tableName) throws SQLException;
+
+    void disconnect() throws SQLException;
 
     boolean isConnected();
 }

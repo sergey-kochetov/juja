@@ -14,7 +14,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
             "WHERE table_schema='public' AND table_type='BASE TABLE'";
     private static final String SELECT_SIZE_TABLE = "SELECT COUNT(*) FROM ";
 
-    private static final String SQL_DELETE = "DELETE FROM ";
+    private static final String DELETE_TABLE = "DROP TABLE ";
     private static final String SQL_INSERT = "INSERT INTO ";
     private static final String SQL_GET_TABLE_COLUMNS = "SELECT * FROM information_schema.columns " +
             "WHERE table_schema=? AND table_name = ?";
@@ -52,6 +52,13 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public Connection getConnection() throws SQLException {
         checkConnection();
         return connection;
+    }
+
+    @Override
+    public void disconnect() throws SQLException {
+        if (connection != null) {
+            connection.close();
+        }
     }
 
     @Override
@@ -106,22 +113,11 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         }
     }
 
-    public void delete(String tableName, Map<String, Object> data) throws SQLException {
+    @Override
+    public void delete(String tableName) throws SQLException {
         checkConnection();
-        String key = "(" + data.entrySet().stream().map((entry) ->
-                entry.getKey())
-                .collect(Collectors.joining(",")) + ")";
-        String value =  "(" + data.entrySet().stream().map((entry) ->
-                entry.getValue().toString())
-                .collect(Collectors.joining(",")) + ")";
-
-        String sql = "DELETE FROM ? WHERE ? = ?;";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, tableName);
-            stmt.setString(2, key);
-            stmt.setString(3, value);
-
-            stmt.executeUpdate();
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(DELETE_TABLE + tableName);
         }
     }
 

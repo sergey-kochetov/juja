@@ -1,10 +1,12 @@
 package com.juja.controller.command;
 
+import com.juja.controller.UtilsCommand;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -78,10 +80,10 @@ public class CreateTest {
         // given
         List<String> list = new LinkedList<String>();
         list.add("id");
-        when(manager.getTableColumns("test"))
+        when(manager.getTableColumns("customer"))
                 .thenReturn(list);
 
-        when(manager.getTableData("test")).thenReturn(Collections.EMPTY_LIST);
+        when(manager.getTableData("customer")).thenReturn(Collections.EMPTY_LIST);
 
         // when
         command.process("create|customer|id|1");

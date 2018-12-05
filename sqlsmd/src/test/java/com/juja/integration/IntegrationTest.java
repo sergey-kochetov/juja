@@ -3,25 +3,63 @@ package com.juja.integration;
 import com.juja.controller.Main;
 import com.juja.model.DatabaseManager;
 import com.juja.model.JDBCDatabaseManager;
+import com.juja.model.JDBCDatabaseManagerTest;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
 public class IntegrationTest {
     private static ConfigurableInputStream in;
     private static ByteArrayOutputStream out;
-    private static DatabaseManager databaseManager;
+    private static DatabaseManager manager = new JDBCDatabaseManager();
 
+
+    @BeforeClass
+    public static void startUp() throws URISyntaxException, IOException, SQLException {
+        // given
+        URL url1 = JDBCDatabaseManager.class.getClassLoader()
+                .getResource("create_table.sql");
+        URL url2 = JDBCDatabaseManager.class.getClassLoader()
+                .getResource("data_customer.sql");
+
+
+        List<String> lines1 = Files.readAllLines(Paths.get(url1.toURI()));
+        String sql1 = lines1.stream().collect(Collectors.joining());
+
+        List<String> lines2 = Files.readAllLines(Paths.get(url2.toURI()));
+        String sql2 = lines2.stream().collect(Collectors.joining());
+
+
+
+        manager.defaultConnect();
+        try (Connection con = manager.getConnection();
+             Statement stmp = con.createStatement();
+        ) {
+            stmp.executeUpdate(sql1);
+            stmp.executeUpdate(sql2);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Before
     public void setup() {
-        databaseManager = new JDBCDatabaseManager();
-
         out = new ByteArrayOutputStream();
         in = new ConfigurableInputStream();
 
@@ -65,6 +103,8 @@ public class IntegrationTest {
                         "\t\tfor get list database\r\n" +
                         "\tclear|tableName\r\n" +
                         "\t\tdatabase cleaning\r\n" +
+                        "\tdrop|tableName\r\n" +
+                        "\t\tdrop database\r\n" +
                         "\tcreate|database|row1|param1|...|rowN|paramN\r\n" +
                         "\t\tcreate data for database\r\n" +
                         "\tfind|tableName\r\n" +

@@ -29,6 +29,7 @@ public class MainController {
                 new isConnect(manager, view),
                 new ListTable(manager, view),
                 new Clear(manager, view),
+                new Drop(manager, view),
                 new Create(manager, view),
                 new Find(manager, view),
                 new Unsupported(view)

@@ -31,9 +31,6 @@ public class ClearTest {
 
     @Test
     public void testCanProcessClearWithParametersValidString() {
-        // given
-        Command command = new Clear(manager, view);
-
         //when
         boolean canProcess = command.canProcess("clear|table");
 
@@ -43,28 +40,7 @@ public class ClearTest {
 
     @Test
     public void testCanProcessClearWithParametersNovalidString() {
-        // given
-        Command command = new Clear(manager, view);
-
         //when
-        boolean canProcess = command.canProcess("novalid|table");
-
-        // then
-        assertEquals(false, canProcess);
-    }
-
-    @Test
-    public void testCanProcessClearWithParametersString() {
-        // when
-        boolean canProcess = command.canProcess("clear|customer");
-
-        // then
-        assertEquals(true, canProcess);
-    }
-
-    @Test
-    public void testCantProcessClearWithoutParametersString() {
-        // when
         boolean canProcess = command.canProcess("novalid|table");
 
         // then

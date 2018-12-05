@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class Create implements Command {
+
+    private static final String COMMAND_SAMPLE = "create|customer";
+    private static final int SPLIT = COMMAND_SAMPLE.split("[|]").length;
+
     private final View view;
     private final DatabaseManager manager;
 
@@ -18,15 +22,14 @@ public class Create implements Command {
 
     @Override
     public boolean canProcess(String command) {
-        String[] split = format().split("[|]");
-        if (split.length == 1) {
-            return false;
-        }
-        return command.startsWith(split[0]);
+        return command.startsWith("create|");
     }
 
     @Override
     public void process(String command) throws SQLException {
+        if (!canProcess(command)) {
+            return;
+        }
         String[] data = command.split("[|]");
         if (data.length  % 2 != 0) {
             throw new IllegalArgumentException("No valid data % 2 == 0");
