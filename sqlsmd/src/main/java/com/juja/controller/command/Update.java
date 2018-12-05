@@ -6,8 +6,7 @@ import com.juja.view.View;
 
 import java.sql.SQLException;
 import java.util.Map;
-
-//TODO implemet me
+//TODO
 public class Update implements Command {
     private DatabaseManager manager;
     private View view;
@@ -20,7 +19,7 @@ public class Update implements Command {
     @Override
     public boolean canProcess(String command) {
 
-        return command.startsWith("upate|");
+        return command.startsWith("update|");
     }
 
     @Override
@@ -38,17 +37,17 @@ public class Update implements Command {
             }
             manager.create(tableName, map);
             view.write(String.format(
-                    "data successfully upated to tables '%s'" ,tableName));
+                    "data successfully updated to tables '%s'" ,tableName));
         }
     }
 
     @Override
     public String format() {
-        return "upate|tableName|column1|value1|column2|value2|...|columnN|valueN";
+        return "update|tableName|column1|value1|column2|value2|...|columnN|valueN";
     }
 
     @Override
     public String description() {
-        return "upate data into a table";
+        return "update data into a table";
     }
 }
