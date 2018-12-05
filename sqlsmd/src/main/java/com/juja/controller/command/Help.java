@@ -20,6 +20,9 @@ public class Help implements Command {
 
     @Override
     public void process(String command) {
+        if (!canProcess(command)) {
+            return;
+        }
         view.write("Existing commands");
         for (Command comm : commands ) {
             if (!comm.description().isEmpty() || !comm.format().isEmpty()) {

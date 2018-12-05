@@ -26,16 +26,21 @@ public class Find implements Command {
 
     @Override
     public void process(String command) throws SQLException {
-        String[] data = command.split("\\|");
+        if (!canProcess(command)) {
+            return;
+        }
+        String[] data = command.split("[|]");
         String tableName = data[1];
+        try {
+            List<String> tableColumns = manager.getTableColumns(tableName);
+            List<Map<String, Object>> tableData = manager.getTableData(tableName);
+            List<Integer> lengthRow = lengthRowData(tableColumns);
 
-        List<String> tableColumns = manager.getTableColumns(tableName);
-        List<Map<String, Object>> tableData = manager.getTableData(tableName);
-
-        List<Integer> lengthRow = lengthRowData(tableColumns);
-
-        printHeader(tableColumns, lengthRow);
-        printTable(tableData, lengthRow);
+            printHeader(tableColumns, lengthRow);
+            printTable(tableData, lengthRow);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(String.format("table '%s' not found", data[1]));
+        }
     }
 
     @Override

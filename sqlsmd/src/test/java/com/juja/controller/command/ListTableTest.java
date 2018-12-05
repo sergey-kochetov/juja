@@ -31,7 +31,7 @@ public class ListTableTest {
     @Test
     public void testCanProcessListWithParametersString() {
         // when
-        boolean canProcess = command.canProcess("list");
+        boolean canProcess = command.canProcess("tables");
 
         // then
         assertTrue(canProcess);
@@ -47,7 +47,7 @@ public class ListTableTest {
         when(manager.getTableNames())
                 .thenReturn(list);
         // when
-        command.process("list");
+        command.process("tables");
 
         // then
         shouldPrint("[test1, test2]");
@@ -60,7 +60,7 @@ public class ListTableTest {
         when(manager.getTableNames())
                 .thenReturn(list);
         // when
-        command.process("list");
+        command.process("tables");
 
         // then
         shouldPrint("[]");

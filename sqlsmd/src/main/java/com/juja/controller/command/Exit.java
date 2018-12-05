@@ -16,6 +16,9 @@ public class Exit implements Command {
 
     @Override
     public void process(String command) {
+        if (!canProcess(command)) {
+            return;
+        }
         view.write("bye...");
         throw new ExitException();
     }

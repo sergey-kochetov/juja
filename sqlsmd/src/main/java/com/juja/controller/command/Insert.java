@@ -8,46 +8,54 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class Insert implements Command {
-    private DatabaseManager manager;
-    private View view;
+
+    private static final String COMMAND_SAMPLE = "insert|customer";
+    private static final int SPLIT = COMMAND_SAMPLE.split("[|]").length;
+
+    private final View view;
+    private final DatabaseManager manager;
 
     public Insert(DatabaseManager manager, View view) {
-        this.manager = manager;
         this.view = view;
+        this.manager = manager;
     }
 
     @Override
     public boolean canProcess(String command) {
-
         return command.startsWith("insert|");
     }
 
     @Override
     public void process(String command) throws SQLException {
-        String[] data = command.split("[|]");
-
-        if (data.length > 2 && data.length % 2 == 0) {
-            String tableName = data[1];
-            Map<String, Object> map = UtilsCommand.getDataMap();
-            for (int i = 2; i < data.length ; i += 2) {
-                map.put(data[i], data[i + 1]);
-            }
-            manager.create(tableName, map);
-            view.write(String.format(
-                    "data successfully added to tables '%s'" ,tableName));
+        if (!canProcess(command)) {
+            return;
         }
+        String[] data = command.split("[|]");
+        if (data.length  % 2 != 0) {
+            throw new IllegalArgumentException("No valid data % 2 == 0");
+        }
+        String tableName = data[1];
 
+        Map<String, Object> dataSet = UtilsCommand.getDataMap();
+        for (int i = 1; i < data.length / 2; i++) {
+            String columnName = data[i * 2];
+            String value = data[i * 2 + 1];
 
+            dataSet.put(columnName, value);
+        }
+        manager.create(tableName, dataSet);
 
+        view.write(String.format("'%s' was successfully created in table '%s'",
+                dataSet.toString(), tableName));
     }
 
     @Override
     public String format() {
-        return "insert|tableName|column1|value1|column2|value2|...|columnN|valueN";
+        return "insert|tableName|row1|param1|...|rowN|paramN";
     }
 
     @Override
     public String description() {
-        return "insert data into a table";
+        return "create data for database";
     }
 }

@@ -46,11 +46,17 @@ public class Connect implements Command {
 
     @Override
     public String format() {
-        return "connect|database|userName|password";
+        if (!manager.isConnected()) {
+            return "connect|database|userName|password";
+        }
+        return "";
     }
 
     @Override
     public String description() {
-        return "for connect to database";
+        if (!manager.isConnected()) {
+            return "for connect to database";
+        }
+        return "";
     }
 }

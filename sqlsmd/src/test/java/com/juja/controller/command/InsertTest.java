@@ -1,12 +1,10 @@
 package com.juja.controller.command;
 
-import com.juja.controller.UtilsCommand;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -17,7 +15,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class CreateTest {
+public class InsertTest {
 
     private DatabaseManager manager;
     private View view;
@@ -27,13 +25,13 @@ public class CreateTest {
     public void setup() {
         manager = mock(DatabaseManager.class);
         view = mock(View.class);
-        command = new Create(manager, view);
+        command = new Insert(manager, view);
     }
 
     @Test
     public void testCanProcessCreateWithParametersString() {
         // when
-        boolean canProcess = command.canProcess("create|customer|c_ic|10");
+        boolean canProcess = command.canProcess("insert|customer|c_ic|10");
 
         // then
         assertTrue(canProcess);
@@ -68,7 +66,7 @@ public class CreateTest {
         when(manager.getTableData("customer")).thenReturn(Collections.EMPTY_LIST);
 
         // when
-        command.process("create|customer|c_id|1|c_name|name1|c_password|+++++");
+        command.process("insert|customer|c_id|1|c_name|name1|c_password|+++++");
 
         // then
         shouldPrint("['{c_id=1, c_name=name1, c_password=+++++}' " +
@@ -86,8 +84,8 @@ public class CreateTest {
         when(manager.getTableData("customer")).thenReturn(Collections.EMPTY_LIST);
 
         // when
-        command.process("create|customer|id|1");
-        command.process("create|customer|id|2");
+        command.process("insert|customer|id|1");
+        command.process("insert|customer|id|2");
 
         // then
         shouldPrint("[" +

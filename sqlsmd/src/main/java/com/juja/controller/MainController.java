@@ -24,13 +24,14 @@ public class MainController {
     private void initCommands() {
         commands.addAll(Arrays.asList(
                 new Connect(manager, view),
+                new Disconnect(manager, view),
                 new Help(view, commands),
                 new Exit(view),
                 new isConnect(manager, view),
                 new ListTable(manager, view),
                 new Clear(manager, view),
                 new Drop(manager, view),
-                new Create(manager, view),
+                new Insert(manager, view),
                 new Find(manager, view),
                 new Unsupported(view)
         ));

@@ -3,7 +3,6 @@ package com.juja.integration;
 import com.juja.controller.Main;
 import com.juja.model.DatabaseManager;
 import com.juja.model.JDBCDatabaseManager;
-import com.juja.model.JDBCDatabaseManagerTest;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -99,13 +98,13 @@ public class IntegrationTest {
                         "\t\tthis page\r\n" +
                         "\texit\r\n" +
                         "\t\tfor exit program\r\n" +
-                        "\tlist\r\n" +
-                        "\t\tfor get list database\r\n" +
+                        "\ttables\r\n" +
+                        "\t\tfor get tables database\r\n" +
                         "\tclear|tableName\r\n" +
                         "\t\tdatabase cleaning\r\n" +
                         "\tdrop|tableName\r\n" +
                         "\t\tdrop database\r\n" +
-                        "\tcreate|database|row1|param1|...|rowN|paramN\r\n" +
+                        "\tinsert|tableName|row1|param1|...|rowN|paramN\r\n" +
                         "\t\tcreate data for database\r\n" +
                         "\tfind|tableName\r\n" +
                         "\t\tfor see table 'tableName'\r\n" +
@@ -151,7 +150,7 @@ public class IntegrationTest {
         // given
 
         in.add("connect|sqlsmd|postgres|postgres");
-        in.add("list");
+        in.add("tables");
         in.add("exit");
 
         // when
@@ -198,8 +197,8 @@ public class IntegrationTest {
 
         in.add("connect|sqlsmd|postgres|postgres");
         in.add("clear|customer");
-        in.add("create|customer|c_id|13|c_name|adam|c_password|***");
-        in.add("create|customer|c_id|14|c_name|eva|c_password|+++");
+        in.add("insert|customer|c_id|13|c_name|adam|c_password|***");
+        in.add("insert|customer|c_id|14|c_name|eva|c_password|+++");
         in.add("find|customer");
         in.add("exit");
 

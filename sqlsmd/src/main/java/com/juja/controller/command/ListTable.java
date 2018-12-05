@@ -31,11 +31,11 @@ public class ListTable implements Command {
 
     @Override
     public String format() {
-        return "list";
+        return "tables";
     }
 
     @Override
     public String description() {
-        return "for get list database";
+        return "for get tables database";
     }
 }
