@@ -35,6 +35,7 @@ public class MainController {
                 new Find(manager, view),
                 new Update(manager, view),
                 new Create(manager, view),
+                new Delete(manager, view),
                 new Unsupported(view)
         ));
     }

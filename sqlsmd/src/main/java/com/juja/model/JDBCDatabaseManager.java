@@ -14,7 +14,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
             "WHERE table_schema='public' AND table_type='BASE TABLE'";
     private static final String SELECT_SIZE_TABLE = "SELECT COUNT(*) FROM ";
 
-    private static final String DELETE_TABLE = "DROP TABLE ";
+    private static final String DROP_TABLE = "DROP TABLE ";
     private static final String SQL_INSERT = "INSERT INTO ";
     private static final String SQL_GET_TABLE_COLUMNS = "SELECT * FROM information_schema.columns " +
             "WHERE table_schema=? AND table_name = ?";
@@ -115,10 +115,24 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     @Override
-    public void delete(String tableName) throws SQLException {
+    public void drop(String tableName) throws SQLException {
         checkConnection();
         try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(DELETE_TABLE + tableName);
+            stmt.executeUpdate(DROP_TABLE + tableName);
+        }
+    }
+    @Override
+    public void delete(String tableName,  Map<String, Object> delValue) throws SQLException {
+        checkConnection();
+
+        String delete = delValue.entrySet()
+                .stream()
+                .map(entry -> String.format("%s='%s'", entry.getKey(), entry.getValue()))
+                .collect(Collectors.joining(", "));;
+
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(
+                    "DELETE FROM " + tableName + " WHERE (" + delete +")");
         }
     }
 

@@ -112,8 +112,10 @@ public class IntegrationTest {
                         "\t\tupdate data into a table\r\n" +
                         "\tcreate|tableName|column1|type1|...|columnN|typeN\r\n" +
                         "\t\tcreate new table\r\n" +
+                        "\tdelete|tableName|column|value\r\n" +
+                        "\t\tdeleting data in the table with parameters\r\n" +
                         "Enter command (or 'help'): \r\n" +
-                        "bye...\r\n", getData().toString());
+                        "bye...\r\n", getData());
     }
     @Test
     public void testListAndExit(){

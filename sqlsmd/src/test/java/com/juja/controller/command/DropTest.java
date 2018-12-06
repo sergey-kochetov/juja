@@ -57,7 +57,7 @@ public class DropTest {
     @Test
     public void testDropEmptyTable() throws SQLException {
         // given
-        Mockito.doThrow(new SQLException()).when(manager).delete("customer");
+        Mockito.doThrow(new SQLException()).when(manager).drop("customer");
         // when
         try {
             command.process("drop|customer");

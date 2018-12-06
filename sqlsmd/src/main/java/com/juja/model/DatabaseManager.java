@@ -1,5 +1,7 @@
 package com.juja.model;
 
+import com.juja.controller.Main;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -21,7 +23,9 @@ public interface DatabaseManager {
 
     void clear(String tableName) throws SQLException;
 
-    void delete(String tableName) throws SQLException;
+    void drop(String tableName) throws SQLException;
+
+    void delete(String tableName, Map<String, Object> delValue) throws SQLException;
 
     void create(String tableName, List<String> input) throws SQLException;
 

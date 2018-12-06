@@ -33,7 +33,7 @@ public class Drop implements Command {
             throw new IllegalArgumentException(String.format("format %s, but was: %s", format(), command));
         }
         try {
-            manager.delete(data[1]);
+            manager.drop(data[1]);
         } catch (SQLException ex) {
             throw new IllegalArgumentException(String.format("table '%s' does not exist", data[1]));
         }
