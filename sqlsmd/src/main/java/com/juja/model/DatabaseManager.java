@@ -23,7 +23,9 @@ public interface DatabaseManager {
 
     void delete(String tableName) throws SQLException;
 
-    void create(String tableName, Map<String, Object> input) throws SQLException;
+    void create(String tableName, List<String> input) throws SQLException;
+
+    void insert(String tableName, Map<String, Object> input) throws SQLException;
 
     void update(String tableName, int id, Map<String, Object> newValue) throws SQLException;
 

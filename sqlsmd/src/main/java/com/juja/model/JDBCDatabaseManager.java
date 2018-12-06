@@ -19,6 +19,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     private static final String SQL_GET_TABLE_COLUMNS = "SELECT * FROM information_schema.columns " +
             "WHERE table_schema=? AND table_name = ?";
     private static final String SQL_CLEAR = "TRUNCATE ";
+    private static final String SQL_CREATE_TABLE = "CREATE TABLE ";
 
     private Connection connection;
 
@@ -122,7 +123,19 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     @Override
-    public void create(String tableName, Map<String, Object> input) throws SQLException {
+    public void create(String tableName, List<String> input) throws SQLException {
+        checkConnection();
+        String columnsName = "";
+        if (!input.isEmpty()) {
+            columnsName += String.join(",", input);
+        }
+        try ( Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(SQL_CREATE_TABLE + tableName + " (" + columnsName + ")");
+        }
+    }
+
+    @Override
+    public void insert(String tableName, Map<String, Object> input) throws SQLException {
         checkConnection();
         String tableNames = getNameFormated(input, "%s,");
         String values = getValuesFormated(input, "'%s',");

@@ -1,10 +1,12 @@
 package com.juja.model;
 
+import com.juja.controller.UtilsCommand;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,7 +50,7 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         input.put("c_id", 13);
         input.put("c_name", "Stiven");
         input.put("c_password", "pass");
-        manager.create(customer, input);
+        manager.insert(customer, input);
 
         // then
         List<Map<String, Object>> users = manager.getTableData("customer");
@@ -69,7 +71,7 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         input.put("c_id", 10);
         input.put("c_name", "name");
         input.put("c_password", "pass");
-        manager.create(customer, input);
+        manager.insert(customer, input);
 
         // when
         Map<String, Object> newValue = new LinkedHashMap<>();

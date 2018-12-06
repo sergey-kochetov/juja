@@ -35,7 +35,7 @@ public class Update implements Command {
             for (int i = 2; i < data.length ; i += 2) {
                 map.put(data[i], data[i + 1]);
             }
-            manager.create(tableName, map);
+            manager.update(tableName,0, map);
             view.write(String.format(
                     "data successfully updated to tables '%s'" ,tableName));
         }

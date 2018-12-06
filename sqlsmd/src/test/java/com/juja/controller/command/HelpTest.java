@@ -53,7 +53,7 @@ public class HelpTest {
         command.process("help");
 
         // then
-        shouldPrint("[Existing commands, \tconnect|database|userName|password, \t\tfor connect to database, \thelp, \t\tthis page, \texit, \t\tfor exit program, \ttables, \t\tfor get tables database, \tclear|tableName, \t\tdatabase cleaning, \tdrop|tableName, \t\tdrop database, \tinsert|tableName|row1|param1|...|rowN|paramN, \t\tcreate data for database, \tfind|tableName, \t\tfor see table 'tableName']");
+        shouldPrint("[Existing commands, \tconnect|database|userName|password, \t\tfor connect to database, \thelp, \t\tthis page, \texit, \t\tfor exit program, \ttables, \t\tfor get tables database, \tclear|tableName, \t\tdatabase cleaning, \tdrop|tableName, \t\tdrop database, \tinsert|tableName|row1|param1|...|rowN|paramN, \t\tcreate data for database, \tfind|tableName, \t\tfor see table 'tableName', \tupdate|tableName|column1|value1|column2|value2|...|columnN|valueN, \t\tupdate data into a table, \tcreate|tableName|column1|type1|...|columnN|typeN, \t\tcreate new table]");
     }
 
     private void shouldPrint(String expected) {

@@ -33,6 +33,8 @@ public class MainController {
                 new Drop(manager, view),
                 new Insert(manager, view),
                 new Find(manager, view),
+                new Update(manager, view),
+                new Create(manager, view),
                 new Unsupported(view)
         ));
     }

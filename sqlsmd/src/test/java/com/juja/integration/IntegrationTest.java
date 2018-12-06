@@ -108,6 +108,10 @@ public class IntegrationTest {
                         "\t\tcreate data for database\r\n" +
                         "\tfind|tableName\r\n" +
                         "\t\tfor see table 'tableName'\r\n" +
+                        "\tupdate|tableName|column1|value1|column2|value2|...|columnN|valueN\r\n" +
+                        "\t\tupdate data into a table\r\n" +
+                        "\tcreate|tableName|column1|type1|...|columnN|typeN\r\n" +
+                        "\t\tcreate new table\r\n" +
                         "Enter command (or 'help'): \r\n" +
                         "bye...\r\n", getData().toString());
     }

@@ -43,7 +43,7 @@ public class Insert implements Command {
 
             dataSet.put(columnName, value);
         }
-        manager.create(tableName, dataSet);
+        manager.insert(tableName, dataSet);
 
         view.write(String.format("'%s' was successfully created in table '%s'",
                 dataSet.toString(), tableName));
