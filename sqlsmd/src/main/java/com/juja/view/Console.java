@@ -4,6 +4,11 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Console implements View {
+    private Scanner scanner;
+
+    public Console() {
+        this.scanner = new Scanner(System.in);
+    }
 
     @Override
     public void write(String message) {
@@ -13,9 +18,7 @@ public class Console implements View {
     @Override
     public String read() {
         try {
-        Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
-
         } catch (NoSuchElementException e) {
             return null;
         }
