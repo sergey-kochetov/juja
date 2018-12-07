@@ -15,13 +15,13 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     private static final String SELECT_TABLE_NAMES = "SELECT table_name FROM information_schema.tables " +
             "WHERE table_schema='public' AND table_type='BASE TABLE'";
     private static final String SELECT_SIZE_TABLE = "SELECT COUNT(*) FROM ";
-
     private static final String DROP_TABLE = "DROP TABLE ";
     private static final String SQL_INSERT = "INSERT INTO ";
     private static final String SQL_GET_TABLE_COLUMNS = "SELECT * FROM information_schema.columns " +
             "WHERE table_schema=? AND table_name = ?";
-    private static final String SQL_CLEAR = "TRUNCATE ";
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE ";
+    private static final String CLEAR_TABLE = "TRUNCATE ";
+    private static final String SQL_CREATE_TABLE = "CREATE TABLE ? (?)";
+    private static final String DELETE_DATA = "DELETE FROM ? WHERE (?)";
 
     private Connection connection;
 
@@ -67,13 +67,13 @@ public class JDBCDatabaseManager implements DatabaseManager  {
                ResultSet rs = stmt.executeQuery("SELECT * FROM public." + tableName);
         ) {
             ResultSetMetaData rsmd = rs.getMetaData();
-            List<Map<String, Object>> result = new LinkedList<>();
+            List<Map<String, Object>> result = UtilsCommand.getDataListMap();
             while (rs.next()) {
-                Map<String, Object> dataSet = new LinkedHashMap<>();
-                result.add(dataSet);
+                Map<String, Object> dataSet = UtilsCommand.getDataMap();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     dataSet.put(rsmd.getColumnName(i), rs.getObject(i));
                 }
+                result.add(dataSet);
             }
             return result;
         }
@@ -96,7 +96,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(SELECT_TABLE_NAMES);
         ) {
-            List<String> tables = new LinkedList<>();
+            List<String> tables = UtilsCommand.getDataList();
             while (rs.next()) {
                 tables.add(rs.getString("table_name"));
             }
@@ -108,7 +108,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public void clear(String tableName) throws SQLException {
         checkConnection();
         try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(SQL_CLEAR + tableName);
+            stmt.executeUpdate(CLEAR_TABLE + tableName);
         }
     }
 
@@ -122,49 +122,44 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     @Override
     public void delete(String tableName,  Map<String, Object> delValue) throws SQLException {
         checkConnection();
-        String delete = delValue.entrySet()
-                .stream()
-                .map(entry -> String.format("%s='%s'", entry.getKey(), entry.getValue()))
-                .collect(Collectors.joining(", "));;
-
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(
-                    "DELETE FROM " + tableName + " WHERE (" + delete +")");
+        String delete = getNameValuesFormated(delValue, "%s='%s'");
+        try (PreparedStatement stmt= connection.prepareStatement(DELETE_DATA)) {
+            stmt.setString(1, tableName);
+            stmt.setString(2, delete);
+            stmt.executeUpdate();
         }
     }
 
     @Override
     public void create(String tableName, List<String> input) throws SQLException {
         checkConnection();
-        String columnsName = "";
-        if (!input.isEmpty()) {
-            columnsName += String.join(",", input);
-        }
-        try ( Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(SQL_CREATE_TABLE + tableName + " (" + columnsName + ")");
+        String columnsName = input.stream()
+                .collect(Collectors.joining(", "));
+        try ( PreparedStatement stmt = connection.prepareStatement(SQL_CREATE_TABLE)) {
+            stmt.setString(1, tableName);
+            stmt.setString(2, columnsName);
+            stmt.executeUpdate();
         }
     }
 
     @Override
     public void insert(String tableName, Map<String, Object> input) throws SQLException {
         checkConnection();
-        String tableNames = getNameFormated(input, "%s,");
-        String values = getValuesFormated(input, "'%s',");
-
+        String tableNames = getNameFormated(input, "%s");
+        String values = getValuesFormated(input, "'%s'");
+        String sql = SQL_INSERT + tableName + " (" + tableNames + ")" + "VALUES (" + values + ")";
         try ( Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(SQL_INSERT + tableName + " (" + tableNames + ")" +
-                    "VALUES (" + values + ")");
+            stmt.executeUpdate(sql);
         }
     }
 
     @Override
     public void update(String tableName, int id, Map<String, Object> newValue) throws SQLException {
         checkConnection();
-        String tableNames = getNameFormated(newValue, "%s = ?,");
-        String nameId = "c_id";
-        String sql = "UPDATE public." + tableName + " SET " + tableNames +
-                " WHERE " + nameId + "= ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql);) {
+        String tableNames = getNameFormated(newValue, "%s = ?");
+        String nameId = getTableColumns(tableName).get(0);
+        String sql = "UPDATE " + tableName + " SET " + tableNames + " WHERE " + nameId + "= ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
             int index = 1;
             for (Object value : newValue.values()) {
                 ps.setObject(index, value);
@@ -197,22 +192,27 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         return connection != null;
     }
 
-    private String getNameFormated(Map<String, Object> newValue, String format) {
-        StringBuilder string = new StringBuilder();
-        for (String name : newValue.keySet()) {
-            string.append(String.format(format, name));
-        }
-        string = new StringBuilder(string.substring(0, string.length() - 1));
-        return string.toString();
+    private String getNameFormated(Map<String, Object> input, String format) {
+
+        return input.keySet()
+                .stream()
+                .map(entry -> String.format(format, entry))
+                .collect(Collectors.joining(","));
     }
 
     private String getValuesFormated(Map<String, Object> input, String format) {
-        StringBuilder values = new StringBuilder();
-        for (Object value: input.values()) {
-            values.append(String.format(format, value));
-        }
-        values = new StringBuilder(values.substring(0, values.length() - 1));
-        return values.toString();
+
+        return input.values()
+                .stream()
+                .map(entry -> String.format(format, entry))
+                .collect(Collectors.joining(","));
+    }
+
+    private String getNameValuesFormated(Map<String, Object> delValue, String format) {
+        return delValue.entrySet()
+                .stream()
+                .map(entry -> String.format(format, entry.getKey(), entry.getValue()))
+                .collect(Collectors.joining(", "));
     }
 
     private void checkConnection() throws SQLException {
