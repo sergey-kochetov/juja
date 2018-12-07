@@ -1,6 +1,8 @@
 package com.juja.model;
 
 import com.juja.config.ConfigDB;
+import com.juja.config.ConfigMsg;
+import com.juja.controller.UtilsCommand;
 
 import java.sql.*;
 import java.util.*;
@@ -40,7 +42,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
                     URL_CONNECT_DB + database, userName, password);
         } catch (SQLException e) {
             throw new SQLException(
-                    String.format("Cant get connection for model:%s user:%s",
+                    String.format(ConfigMsg.getProperty("db.err.format"),
                             database, userName), e);
         }
     }
@@ -120,7 +122,6 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     @Override
     public void delete(String tableName,  Map<String, Object> delValue) throws SQLException {
         checkConnection();
-
         String delete = delValue.entrySet()
                 .stream()
                 .map(entry -> String.format("%s='%s'", entry.getKey(), entry.getValue()))
@@ -177,18 +178,14 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     @Override
     public List<String> getTableColumns(String tableName) throws SQLException {
         checkConnection();
-        try {
-            PreparedStatement stmt = connection.prepareStatement(SQL_GET_TABLE_COLUMNS);
+        try(PreparedStatement stmt = connection.prepareStatement(SQL_GET_TABLE_COLUMNS)) {
             stmt.setString(1, "public");
             stmt.setString(2, tableName);
-
             ResultSet rs = stmt.executeQuery();
-            List<String> tables = new LinkedList<>();
+            List<String> tables = UtilsCommand.getDataList();
             while (rs.next()) {
                 tables.add(rs.getString("column_name"));
             }
-            rs.close();
-            stmt.close();
             return tables;
         } catch (SQLException e) {
             return Collections.emptyList();
@@ -220,7 +217,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
 
     private void checkConnection() throws SQLException {
         if (connection == null) {
-            throw new SQLException("no connect to database.");
+            throw new SQLException(ConfigMsg.getProperty("db.noconnect"));
         }
     }
 }
