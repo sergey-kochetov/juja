@@ -1,12 +1,13 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.controller.UtilsCommand;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
 import java.sql.SQLException;
 import java.util.Map;
-//TODO
+
 public class Update implements Command {
     private DatabaseManager manager;
     private View view;
@@ -37,17 +38,17 @@ public class Update implements Command {
             }
             manager.update(tableName,0, map);
             view.write(String.format(
-                    "data successfully updated to tables '%s'" ,tableName));
+                    ConfigMsg.getProperty("update.success") ,tableName));
         }
     }
 
     @Override
     public String format() {
-        return "update|tableName|column1|value1|column2|value2|...|columnN|valueN";
+        return ConfigMsg.getProperty("update.format");
     }
 
     @Override
     public String description() {
-        return "update data into a table";
+        return ConfigMsg.getProperty("update.description");
     }
 }

@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
@@ -31,11 +32,11 @@ public class ListTable implements Command {
 
     @Override
     public String format() {
-        return "tables";
+        return ConfigMsg.getProperty("tables.format");
     }
 
     @Override
     public String description() {
-        return "for get tables database";
+        return ConfigMsg.getProperty("tables.description");
     }
 }

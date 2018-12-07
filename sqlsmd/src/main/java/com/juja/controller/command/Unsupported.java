@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.view.View;
 
 public class Unsupported implements Command {
@@ -16,7 +17,7 @@ public class Unsupported implements Command {
 
     @Override
     public void process(String command) {
-        view.write("command not exist, try again.");
+        view.write(ConfigMsg.getProperty("unsupported.success"));
     }
 
     @Override

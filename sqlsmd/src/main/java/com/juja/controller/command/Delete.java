@@ -1,17 +1,17 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.controller.UtilsCommand;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 public class Delete implements Command {
 
-    private static final String COMMAND_SAMPLE = "delete|tableName|column|value";
-    private static final int SPLIT = COMMAND_SAMPLE.split("[|]").length;
+    private static final String COMMAND_SAMPLE = ConfigMsg.getProperty("delete.sample");
+    private static final int CORRECT_LENGTH = COMMAND_SAMPLE.split("[|]").length;
 
     private final View view;
     private final DatabaseManager manager;
@@ -31,9 +31,9 @@ public class Delete implements Command {
             return;
         }
         String[] data = command.split("[|]");
-        if (!(data.length >= SPLIT && data.length % 2 == 0)) {
+        if (!(data.length >= CORRECT_LENGTH && data.length % 2 == 0)) {
             throw new IllegalArgumentException(
-                    String.format("format %s, but was: %s", format(), command));
+                    String.format(ConfigMsg.getProperty("delete.err.format"), format(), command));
         }
         String tableName = data[1];
 
@@ -46,17 +46,16 @@ public class Delete implements Command {
         }
         manager.delete(tableName, dataSet);
 
-        view.write(String.format("data table '%s' was successfully deleted", tableName));
-
+        view.write(String.format(ConfigMsg.getProperty("delete.success"), tableName));
     }
 
     @Override
     public String format() {
-        return "delete|tableName|column|value";
+        return ConfigMsg.getProperty("delete.format");
     }
 
     @Override
     public String description() {
-        return "deleting data in the table with parameters";
+        return ConfigMsg.getProperty("delete.description");
     }
 }

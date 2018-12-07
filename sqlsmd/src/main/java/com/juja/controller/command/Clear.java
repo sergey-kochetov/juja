@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
@@ -7,7 +8,7 @@ import java.sql.SQLException;
 
 public class Clear implements Command {
 
-    private static final String COMMAND_SAMPLE = "clear|customer";
+    private static final String COMMAND_SAMPLE = ConfigMsg.getProperty("clear.tablename");
     private static final int SPLIT = COMMAND_SAMPLE.split("[|]").length;
 
     private final View view;
@@ -20,7 +21,7 @@ public class Clear implements Command {
 
     @Override
     public boolean canProcess(String command) {
-        return command.startsWith("clear|");
+        return command.startsWith("clear");
     }
 
     @Override
@@ -30,20 +31,20 @@ public class Clear implements Command {
         }
         String[] data = command.split("[|]");
         if (data.length != SPLIT) {
-            throw new IllegalArgumentException(String.format("format %s, but was: %s", format(), command));
+            view.write(String.format(ConfigMsg.getProperty("clear.err.format"), format(), command));
         }
         manager.clear(data[1]);
 
-        view.write(String.format("table '%s' was successfully cleared", data[1]));
+        view.write(String.format(ConfigMsg.getProperty("clear.format"), data[1]));
     }
 
     @Override
     public String format() {
-        return "clear|tableName";
+        return COMMAND_SAMPLE;
     }
 
     @Override
     public String description() {
-        return "database cleaning";
+        return ConfigMsg.getProperty("clear.database");
     }
 }

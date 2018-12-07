@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
@@ -7,8 +8,8 @@ import java.sql.SQLException;
 
 public class Drop implements Command {
 
-    private static final String COMMAND_SAMPLE = "drop|customer";
-    private static final int SPLIT = COMMAND_SAMPLE.split("[|]").length;
+    private static final String COMMAND_SAMPLE = ConfigMsg.getProperty("drop.sample");
+    private static final int CORRECT_LENGTH = COMMAND_SAMPLE.split("[|]").length;
 
     private final View view;
     private final DatabaseManager manager;
@@ -29,24 +30,26 @@ public class Drop implements Command {
             return;
         }
         String[] data = command.split("[|]");
-        if (data.length != SPLIT) {
-            throw new IllegalArgumentException(String.format("format %s, but was: %s", format(), command));
+        if (data.length != CORRECT_LENGTH) {
+            throw new IllegalArgumentException(String.format(
+                    ConfigMsg.getProperty("drop.err.format"), format(), command));
         }
         try {
             manager.drop(data[1]);
         } catch (SQLException ex) {
-            throw new IllegalArgumentException(String.format("table '%s' does not exist", data[1]));
+            throw new IllegalArgumentException(String.format(
+                    ConfigMsg.getProperty("drop.err.format2"), data[1]));
         }
-        view.write(String.format("table '%s' was successfully droped", data[1]));
+        view.write(String.format(ConfigMsg.getProperty("drop.success"), data[1]));
     }
 
     @Override
     public String format() {
-        return "drop|tableName";
+        return ConfigMsg.getProperty("drop.format");
     }
 
     @Override
     public String description() {
-        return "drop database";
+        return ConfigMsg.getProperty("drop.description");
     }
 }

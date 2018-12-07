@@ -1,6 +1,6 @@
 package com.juja.model;
 
-import com.juja.config.Config;
+import com.juja.config.ConfigDB;
 
 import java.sql.*;
 import java.util.*;
@@ -27,10 +27,9 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public void defaultConnect() throws SQLException {
         if (!isConnected()) {
             connection = DriverManager.getConnection(
-                    Config.getProperty(Config.DB_URL),
-                    Config.getProperty(Config.DB_LOGIN),
-                    Config.getProperty(Config.DB_PASSWORD));
-
+                    ConfigDB.getProperty(ConfigDB.DB_URL),
+                    ConfigDB.getProperty(ConfigDB.DB_LOGIN),
+                    ConfigDB.getProperty(ConfigDB.DB_PASSWORD));
         }
     }
 
@@ -38,11 +37,8 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public void connect(String database, String userName, String password) throws SQLException {
         try {
             connection = DriverManager.getConnection(
-                    URL_CONNECT_DB + database,
-                    userName,
-                    password);
+                    URL_CONNECT_DB + database, userName, password);
         } catch (SQLException e) {
-            connection.close();
             throw new SQLException(
                     String.format("Cant get connection for model:%s user:%s",
                             database, userName), e);

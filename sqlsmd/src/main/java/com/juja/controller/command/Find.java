@@ -2,6 +2,7 @@ package com.juja.controller.command;
 
 import com.google.common.base.Strings;
 
+import com.juja.config.ConfigMsg;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
@@ -39,18 +40,19 @@ public class Find implements Command {
             printHeader(tableColumns, lengthRow);
             printTable(tableData, lengthRow);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(String.format("table '%s' not found", data[1]));
+            throw new IllegalArgumentException(String.format(
+                    ConfigMsg.getProperty("find.err.format"), tableName));
         }
     }
 
     @Override
     public String format() {
-        return "find|tableName";
+        return ConfigMsg.getProperty("find.format");
     }
 
     @Override
     public String description() {
-        return "for see table 'tableName'";
+        return ConfigMsg.getProperty("find.description");
     }
 
     private List<Integer> lengthRowData(List<String> heads) {

@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.controller.UtilsCommand;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
@@ -9,8 +10,8 @@ import java.util.Map;
 
 public class Insert implements Command {
 
-    private static final String COMMAND_SAMPLE = "insert|customer";
-    private static final int SPLIT = COMMAND_SAMPLE.split("[|]").length;
+    private static final String COMMAND_SAMPLE = ConfigMsg.getProperty("insert.sample");
+    private static final int CORRECT_LENGTH = COMMAND_SAMPLE.split("[|]").length;
 
     private final View view;
     private final DatabaseManager manager;
@@ -32,7 +33,8 @@ public class Insert implements Command {
         }
         String[] data = command.split("[|]");
         if (data.length  % 2 != 0) {
-            throw new IllegalArgumentException("No valid data % 2 == 0");
+            throw new IllegalArgumentException(
+                    ConfigMsg.getProperty("insert.err.format"));
         }
         String tableName = data[1];
 
@@ -45,17 +47,17 @@ public class Insert implements Command {
         }
         manager.insert(tableName, dataSet);
 
-        view.write(String.format("'%s' was successfully created in table '%s'",
+        view.write(String.format(ConfigMsg.getProperty("insert.success"),
                 dataSet.toString(), tableName));
     }
 
     @Override
     public String format() {
-        return "insert|tableName|row1|param1|...|rowN|paramN";
+        return ConfigMsg.getProperty("insert.format");
     }
 
     @Override
     public String description() {
-        return "create data for database";
+        return ConfigMsg.getProperty("insert.description");
     }
 }

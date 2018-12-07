@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
@@ -25,7 +26,7 @@ public class Disconnect implements Command {
             return;
         }
         manager.disconnect();
-        view.write("disconnected");
+        view.write(ConfigMsg.getProperty("disconnect.success"));
     }
 
     @Override
@@ -33,7 +34,7 @@ public class Disconnect implements Command {
         if (!manager.isConnected()) {
             return "";
         }
-        return "disconnect";
+        return ConfigMsg.getProperty("disconnect.format");
     }
 
     @Override
@@ -41,6 +42,6 @@ public class Disconnect implements Command {
         if (!manager.isConnected()) {
             return "";
         }
-        return "disable database";
+        return ConfigMsg.getProperty("disconnect.description");
     }
 }

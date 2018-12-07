@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.view.View;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class Help implements Command {
         if (!canProcess(command)) {
             return;
         }
-        view.write("Existing commands");
+        view.write(ConfigMsg.getProperty("help.success"));
         for (Command comm : commands ) {
             if (!comm.description().isEmpty() || !comm.format().isEmpty()) {
                 view.write("\t" + comm.format());
@@ -34,11 +35,11 @@ public class Help implements Command {
 
     @Override
     public String format() {
-        return "help";
+        return ConfigMsg.getProperty("help.format");
     }
 
     @Override
     public String description() {
-        return "this page";
+        return ConfigMsg.getProperty("help.description");
     }
 }

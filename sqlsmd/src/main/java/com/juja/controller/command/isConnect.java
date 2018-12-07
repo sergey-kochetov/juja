@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
@@ -19,7 +20,7 @@ public class isConnect implements Command {
 
     @Override
     public void process(String command) {
-        view.write("Enter please connect|database|userName|password");
+        view.write(ConfigMsg.getProperty("connect.enter"));
     }
 
     @Override

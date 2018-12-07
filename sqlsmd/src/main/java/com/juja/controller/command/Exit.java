@@ -1,5 +1,6 @@
 package com.juja.controller.command;
 
+import com.juja.config.ConfigMsg;
 import com.juja.view.View;
 
 public class Exit implements Command {
@@ -19,17 +20,17 @@ public class Exit implements Command {
         if (!canProcess(command)) {
             return;
         }
-        view.write("bye...");
+        view.write(ConfigMsg.getProperty("exit.success"));
         throw new ExitException();
     }
 
     @Override
     public String format() {
-        return "exit";
+        return ConfigMsg.getProperty("exit.format");
     }
 
     @Override
     public String description() {
-        return "for exit program";
+        return ConfigMsg.getProperty("exit.description");
     }
 }
