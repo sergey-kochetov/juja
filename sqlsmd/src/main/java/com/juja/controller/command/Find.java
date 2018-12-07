@@ -68,7 +68,6 @@ public class Find implements Command {
         return result;
     }
 
-
     private void printTable(List<Map<String, Object>> tableData, List<Integer> lengthRow) {
         for (Map<String, Object> aTableData : tableData) {
             printRow(aTableData, lengthRow);
