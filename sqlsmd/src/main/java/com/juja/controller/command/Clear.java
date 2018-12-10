@@ -30,16 +30,13 @@ public class Clear implements Command {
             return;
         }
         String[] data = command.split("[|]");
+        String resultClear;
         if (data.length != SPLIT) {
-            view.write(String.format(ConfigMsg.getProperty("clear.err.format"), format(), command));
+            resultClear = String.format(ConfigMsg.getProperty("clear.err.format"), format(), command);
+        } else {
+            resultClear = clearTable(data[1]);
         }
-        try {
-            manager.clear(data[1]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        view.write(String.format(ConfigMsg.getProperty("clear.format"), data[1]));
+        view.write(resultClear);
     }
 
     @Override
@@ -50,5 +47,14 @@ public class Clear implements Command {
     @Override
     public String description() {
         return ConfigMsg.getProperty("clear.database");
+    }
+
+    private String clearTable(String tableName) {
+        try {
+            manager.clear(tableName);
+            return String.format(ConfigMsg.getProperty("clear.format"), tableName);
+        } catch (SQLException e) {
+            return String.format(ConfigMsg.getProperty("clear.err.message"), tableName);
+        }
     }
 }

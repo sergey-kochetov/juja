@@ -25,22 +25,19 @@ public class Drop implements Command {
     }
 
     @Override
-    public void process(String command) throws SQLException {
+    public void process(String command) {
         if (!canProcess(command)) {
             return;
         }
         String[] data = command.split("[|]");
+        String reultDrop;
         if (data.length != CORRECT_LENGTH) {
-            throw new IllegalArgumentException(String.format(
-                    ConfigMsg.getProperty("drop.err.format"), format(), command));
+            reultDrop = String.format(ConfigMsg.getProperty("drop.err.format"),
+                    format(), command);
+        } else {
+            reultDrop = dropTable(data[1]);
         }
-        try {
-            manager.drop(data[1]);
-        } catch (SQLException ex) {
-            throw new IllegalArgumentException(String.format(
-                    ConfigMsg.getProperty("drop.err.format2"), data[1]));
-        }
-        view.write(String.format(ConfigMsg.getProperty("drop.success"), data[1]));
+        view.write(reultDrop);
     }
 
     @Override
@@ -51,5 +48,14 @@ public class Drop implements Command {
     @Override
     public String description() {
         return ConfigMsg.getProperty("drop.description");
+    }
+
+    private String dropTable(String tableName) {
+        try {
+            manager.drop(tableName);
+            return String.format(ConfigMsg.getProperty("drop.success"), tableName);
+        } catch (SQLException ex) {
+            return String.format(ConfigMsg.getProperty("drop.err.format2"), tableName);
+        }
     }
 }

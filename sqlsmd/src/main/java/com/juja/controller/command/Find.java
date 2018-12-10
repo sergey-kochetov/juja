@@ -11,6 +11,8 @@ import java.util.*;
 
 public class Find implements Command {
     private static final int MIN_LENGTH = 15;
+    private static final String COMMAND_SAMPLE = ConfigMsg.getProperty("find.sample");
+    private static final int CORRECT_LENGTH = COMMAND_SAMPLE.split("[|]").length;
 
     private final DatabaseManager manager;
     private final View view;
@@ -26,22 +28,17 @@ public class Find implements Command {
     }
 
     @Override
-    public void process(String command) throws SQLException {
+    public void process(String command) {
         if (!canProcess(command)) {
             return;
         }
         String[] data = command.split("[|]");
         String tableName = data[1];
-        try {
-            List<String> tableColumns = manager.getTableColumns(tableName);
-            List<Map<String, Object>> tableData = manager.getTableData(tableName);
-            List<Integer> lengthRow = lengthRowData(tableColumns);
-
-            printHeader(tableColumns, lengthRow);
-            printTable(tableData, lengthRow);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(String.format(
-                    ConfigMsg.getProperty("find.err.format"), tableName));
+        if (data.length != CORRECT_LENGTH) {
+            view.write(String.format(ConfigMsg.getProperty(
+                    "find.err.format2"), format(), command));
+        } else {
+            findTable(tableName);
         }
     }
 
@@ -53,6 +50,19 @@ public class Find implements Command {
     @Override
     public String description() {
         return ConfigMsg.getProperty("find.description");
+    }
+
+    private void findTable(String tableName) {
+        try {
+            List<String> tableColumns = manager.getTableColumns(tableName);
+            List<Map<String, Object>> tableData = manager.getTableData(tableName);
+            List<Integer> lengthRow = lengthRowData(tableColumns);
+
+            printHeader(tableColumns, lengthRow);
+            printTable(tableData, lengthRow);
+        } catch (SQLException e) {
+            view.write(String.format(ConfigMsg.getProperty("find.err.format"), tableName));
+        }
     }
 
     private List<Integer> lengthRowData(List<String> heads) {
@@ -76,8 +86,6 @@ public class Find implements Command {
     }
 
     private void printRow(Map<String, Object> row, List<Integer> lengthRow) {
-
-
         StringBuilder result = new StringBuilder("|");
         int index = 0;
         for (Map.Entry<String, Object> p : row.entrySet()) {
@@ -90,8 +98,7 @@ public class Find implements Command {
         StringBuilder result = new StringBuilder("|");
         for (int i = 0; i < tableColumns.size() ; i++) {
             result.append(Strings.padEnd(tableColumns.get(i),
-                    lengthRow.get(i),
-                    ' ')).append("|");
+                    lengthRow.get(i), ' ')).append("|");
         }
         printSeparator(lengthRow);
         view.write(result.toString());
