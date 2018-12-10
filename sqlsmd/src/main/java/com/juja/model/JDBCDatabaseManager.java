@@ -15,13 +15,14 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     private static final String SELECT_TABLE_NAMES = "SELECT table_name FROM information_schema.tables " +
             "WHERE table_schema='public' AND table_type='BASE TABLE'";
     private static final String SELECT_SIZE_TABLE = "SELECT COUNT(*) FROM ";
-    private static final String DROP_TABLE = "DROP TABLE ";
-    private static final String SQL_INSERT = "INSERT INTO ";
+    private static final String DROP_TABLE = "DROP TABLE %s";
+    private static final String SQL_INSERT = "INSERT INTO %s (%s) VALUES (%s)";
     private static final String SQL_GET_TABLE_COLUMNS = "SELECT * FROM information_schema.columns " +
             "WHERE table_schema=? AND table_name = ?";
-    private static final String CLEAR_TABLE = "TRUNCATE ";
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE ? (?)";
+    private static final String CLEAR_TABLE = "TRUNCATE %s";
+    private static final String SQL_CREATE_TABLE = "CREATE TABLE %s (%s)";
     private static final String DELETE_DATA = "DELETE FROM %s WHERE (%s)";
+    private static final String UPDATE_TABLE = "UPDATE %s SET %s WHERE %s= ?";
 
     private Connection connection;
 
@@ -108,7 +109,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public void clear(String tableName) throws SQLException {
         checkConnection();
         try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(CLEAR_TABLE + tableName);
+            stmt.executeUpdate(String.format(CLEAR_TABLE, tableName));
         }
     }
 
@@ -116,7 +117,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public void drop(String tableName) throws SQLException {
         checkConnection();
         try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(DROP_TABLE + tableName);
+            stmt.executeUpdate(String.format(DROP_TABLE, tableName));
         }
     }
     @Override
@@ -133,10 +134,8 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         checkConnection();
         String columnsName = input.stream()
                 .collect(Collectors.joining(", "));
-        try ( PreparedStatement stmt = connection.prepareStatement(SQL_CREATE_TABLE)) {
-            stmt.setString(1, tableName);
-            stmt.setString(2, columnsName);
-            stmt.executeUpdate();
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(String.format(SQL_CREATE_TABLE, tableName, columnsName));
         }
     }
 
@@ -145,9 +144,8 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         checkConnection();
         String tableNames = getNameFormated(input, "%s");
         String values = getValuesFormated(input, "'%s'");
-        String sql = SQL_INSERT + tableName + " (" + tableNames + ")" + "VALUES (" + values + ")";
         try ( Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(sql);
+            stmt.executeUpdate(String.format(SQL_INSERT, tableName, tableNames, values));
         }
     }
 
@@ -156,7 +154,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
         checkConnection();
         String tableNames = getNameFormated(newValue, "%s = ?");
         String nameId = getTableColumns(tableName).get(0);
-        String sql = "UPDATE " + tableName + " SET " + tableNames + " WHERE " + nameId + "= ?";
+        String sql = String.format(UPDATE_TABLE, tableName, tableNames, nameId);
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             int index = 1;
             for (Object value : newValue.values()) {
