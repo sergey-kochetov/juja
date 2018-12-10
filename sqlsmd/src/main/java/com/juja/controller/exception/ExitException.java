@@ -1,4 +1,4 @@
-package com.juja.controller.command;
+package com.juja.controller.exception;
 
 public class ExitException extends RuntimeException {
 }

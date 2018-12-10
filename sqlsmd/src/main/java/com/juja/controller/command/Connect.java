@@ -24,24 +24,17 @@ public class Connect implements Command {
     }
 
     @Override
-    public void process(String command) throws SQLException {
+    public void process(String command){
         if (!canProcess(command)) {
             return;
-        } else if ("connect|".equals(command)) {
-            manager.defaultConnect();
-        } else {
-            String[] data = command.split("[|]");
-            if (data.length != CORRECT_LENGTH) {
-                throw new IllegalArgumentException(String.format(
-                        ConfigMsg.getProperty("connect.novalid"),
-                        CORRECT_LENGTH, data.length));
-            }
-            String databaseName = data[1];
-            String userName = data[2];
-            String password = data[3];
-            manager.connect(databaseName, userName, password);
         }
-        view.write( ConfigMsg.getProperty("connect.success"));
+        String resultConnect;
+        if ("connect|".equals(command)) {
+            resultConnect = defaultConnect();
+        } else {
+            resultConnect = connectToDb(command);
+        }
+        view.write(resultConnect);
     }
 
     @Override
@@ -59,4 +52,37 @@ public class Connect implements Command {
         }
         return "";
     }
+
+    private String connectToDb(String command) {
+        String[] data = command.split("[|]");
+        if (data.length != CORRECT_LENGTH) {
+            return String.format(ConfigMsg.getProperty("connect.novalid"),
+                    CORRECT_LENGTH, data.length);
+        } else {
+            return connectToDbValid(data);
+        }
+    }
+
+    private String defaultConnect() {
+        try {
+            manager.defaultConnect();
+            return ConfigMsg.getProperty("connect.success");
+        } catch (SQLException ex) {
+            return ConfigMsg.getProperty("connect.err.message2");
+        }
+    }
+
+    private String connectToDbValid(String[] data) {
+        String databaseName = data[1];
+        String userName = data[2];
+        String password = data[3];
+        try {
+            manager.connect(databaseName, userName, password);
+            return ConfigMsg.getProperty("connect.success");
+        } catch (SQLException e) {
+            return String.format(ConfigMsg.getProperty("db.err.format"),
+                    databaseName, userName);
+        }
+    }
+
 }

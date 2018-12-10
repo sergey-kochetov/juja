@@ -2,6 +2,7 @@ package com.juja.controller;
 
 import com.juja.config.ConfigMsg;
 import com.juja.controller.command.*;
+import com.juja.controller.exception.ExitException;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 

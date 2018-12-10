@@ -25,7 +25,7 @@ public class Clear implements Command {
     }
 
     @Override
-    public void process(String command) throws SQLException {
+    public void process(String command) {
         if (!canProcess(command)) {
             return;
         }
@@ -33,7 +33,11 @@ public class Clear implements Command {
         if (data.length != SPLIT) {
             view.write(String.format(ConfigMsg.getProperty("clear.err.format"), format(), command));
         }
-        manager.clear(data[1]);
+        try {
+            manager.clear(data[1]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         view.write(String.format(ConfigMsg.getProperty("clear.format"), data[1]));
     }

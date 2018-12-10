@@ -1,6 +1,7 @@
 package com.juja.controller.command;
 
 import com.juja.config.ConfigMsg;
+import com.juja.controller.exception.ExitException;
 import com.juja.view.View;
 
 public class Exit implements Command {

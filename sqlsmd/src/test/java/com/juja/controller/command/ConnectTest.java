@@ -35,6 +35,15 @@ public class ConnectTest {
     }
 
     @Test
+    public void testCanProcessWithDefault() {
+        // when
+        boolean canProcess = command.canProcess("connect|");
+
+        // then
+        assertTrue(canProcess);
+    }
+
+    @Test
     public void testCanProcessWithParametersStringNovalid() {
         // when
         boolean canProcess = command.canProcess("connect2|sqlsmd|postgres|postgres");
