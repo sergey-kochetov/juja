@@ -7,8 +7,7 @@ import org.mockito.Mockito;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class ExitTest {
 
@@ -23,7 +22,7 @@ public class ExitTest {
         boolean canProcess = command.canProcess("exit");
 
         // then
-        assertEquals(true, canProcess);
+        assertTrue(canProcess);
     }
 
     @Test
@@ -35,7 +34,7 @@ public class ExitTest {
         boolean canProcess = command.canProcess("no_exit");
 
         // then
-        assertEquals(false, canProcess);
+        assertFalse(canProcess);
     }
 
     @Test
@@ -49,8 +48,6 @@ public class ExitTest {
             fail("Expected ExitException");
         } catch (ExitException e) {
             // do nothing
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         // then

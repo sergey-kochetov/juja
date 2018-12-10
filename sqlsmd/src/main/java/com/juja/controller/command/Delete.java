@@ -31,13 +31,11 @@ public class Delete implements Command {
             return;
         }
         String[] data = command.split("[|]");
-        String resultDelete;
         if (!isCorrect(data)) {
-            resultDelete = String.format(ConfigMsg.getProperty("delete.err.format"), format(), command);
+            view.write(String.format(ConfigMsg.getProperty("delete.err.format"), format(), command));
         } else {
-            resultDelete = deleteTable(data);
+            view.write(deleteTable(data));
         }
-        view.write(resultDelete);
     }
 
     @Override

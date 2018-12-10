@@ -27,28 +27,16 @@ public class Insert implements Command {
     }
 
     @Override
-    public void process(String command) throws SQLException {
+    public void process(String command) {
         if (!canProcess(command)) {
             return;
         }
         String[] data = command.split("[|]");
-        if (data.length  % 2 != 0) {
-            throw new IllegalArgumentException(
-                    ConfigMsg.getProperty("insert.err.format"));
+        if (!isCorrect(data)) {
+            view.write(ConfigMsg.getProperty("insert.err.format"));
+        } else {
+            view.write(insertData(data));
         }
-        String tableName = data[1];
-
-        Map<String, Object> dataSet = UtilsCommand.getDataMap();
-        for (int i = 1; i < data.length / 2; i++) {
-            String columnName = data[i * 2];
-            String value = data[i * 2 + 1];
-
-            dataSet.put(columnName, value);
-        }
-        manager.insert(tableName, dataSet);
-
-        view.write(String.format(ConfigMsg.getProperty("insert.success"),
-                dataSet.toString(), tableName));
     }
 
     @Override
@@ -59,5 +47,27 @@ public class Insert implements Command {
     @Override
     public String description() {
         return ConfigMsg.getProperty("insert.description");
+    }
+
+    private String insertData(String[] data) {
+        String tableName = data[1];
+        Map<String, Object> dataSet = UtilsCommand.getDataMap();
+        for (int i = 1; i < data.length / 2; i++) {
+            String columnName = data[i * 2];
+            String value = data[i * 2 + 1];
+            dataSet.put(columnName, value);
+        }
+        try {
+            manager.insert(tableName, dataSet);
+            return String.format(ConfigMsg.getProperty("insert.success"),
+                    dataSet.toString(), tableName);
+        } catch (SQLException e) {
+            return String.format(ConfigMsg.getProperty("insert.err.format2"),
+                    dataSet.toString(), tableName);
+        }
+    }
+
+    private boolean isCorrect(String[] data) {
+        return data.length  % CORRECT_LENGTH == 0;
     }
 }

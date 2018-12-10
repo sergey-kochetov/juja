@@ -28,39 +28,41 @@ public class Connect implements Command {
         if (!canProcess(command)) {
             return;
         }
-        String resultConnect;
         if ("connect|".equals(command)) {
-            resultConnect = defaultConnect();
+            view.write(defaultConnect());
         } else {
-            resultConnect = connectToDb(command);
+            view.write(connectToDb(command));
         }
-        view.write(resultConnect);
     }
 
     @Override
     public String format() {
-        if (!manager.isConnected()) {
-            return COMMAND_SAMPLE;
+        if (manager.isConnected()) {
+            return "";
         }
-        return "";
+        return COMMAND_SAMPLE;
     }
 
     @Override
     public String description() {
-        if (!manager.isConnected()) {
-            return ConfigMsg.getProperty("connect.description");
+        if (manager.isConnected()) {
+            return "";
         }
-        return "";
+        return ConfigMsg.getProperty("connect.description");
     }
 
     private String connectToDb(String command) {
         String[] data = command.split("[|]");
-        if (data.length != CORRECT_LENGTH) {
+        if (!isValid(data)) {
             return String.format(ConfigMsg.getProperty("connect.novalid"),
                     CORRECT_LENGTH, data.length);
         } else {
             return connectToDbValid(data);
         }
+    }
+
+    private boolean isValid(String[] data) {
+        return data.length == CORRECT_LENGTH;
     }
 
     private String defaultConnect() {

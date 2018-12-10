@@ -30,13 +30,15 @@ public class Clear implements Command {
             return;
         }
         String[] data = command.split("[|]");
-        String resultClear;
-        if (data.length != SPLIT) {
-            resultClear = String.format(ConfigMsg.getProperty("clear.err.format"), format(), command);
+        if (!isValid(data)) {
+            view.write(String.format(ConfigMsg.getProperty("clear.err.format"), format(), command));
         } else {
-            resultClear = clearTable(data[1]);
+            view.write(clearTable(data[1]));
         }
-        view.write(resultClear);
+    }
+
+    private boolean isValid(String[] data) {
+        return data.length == SPLIT;
     }
 
     @Override

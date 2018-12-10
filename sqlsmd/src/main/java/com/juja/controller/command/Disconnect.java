@@ -29,9 +29,8 @@ public class Disconnect implements Command {
             manager.disconnect();
             view.write(ConfigMsg.getProperty("disconnect.success"));
         } catch (SQLException e) {
-            e.printStackTrace();
+            view.write(ConfigMsg.getProperty("disconnect.err.format"));
         }
-
     }
 
     @Override

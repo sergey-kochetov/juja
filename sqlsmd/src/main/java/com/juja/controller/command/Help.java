@@ -24,13 +24,7 @@ public class Help implements Command {
         if (!canProcess(command)) {
             return;
         }
-        view.write(ConfigMsg.getProperty("help.success"));
-        for (Command comm : commands ) {
-            if (!comm.description().isEmpty() || !comm.format().isEmpty()) {
-                view.write("\t" + comm.format());
-                view.write("\t\t" + comm.description());
-            }
-        }
+        printHelp();
     }
 
     @Override
@@ -41,5 +35,15 @@ public class Help implements Command {
     @Override
     public String description() {
         return ConfigMsg.getProperty("help.description");
+    }
+
+    private void printHelp() {
+        view.write(ConfigMsg.getProperty("help.success"));
+        for (Command comm : commands ) {
+            if (!comm.description().isEmpty() || !comm.format().isEmpty()) {
+                view.write("\t" + comm.format());
+                view.write("\t\t" + comm.description());
+            }
+        }
     }
 }

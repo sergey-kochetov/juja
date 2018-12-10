@@ -32,14 +32,12 @@ public class Create implements Command {
             return;
         }
         String[] data = command.split("[|]");
-        String resultCreate;
         if (!isCorrect(data)) {
-            resultCreate = String.format(ConfigMsg.getProperty("create.err.format"),
-                    format(), command);
+            view.write(String.format(ConfigMsg.getProperty("create.err.format"),
+                    format(), command));
         } else {
-            resultCreate = createTable(data);
+            view.write(createTable(data));
         }
-        view.write(resultCreate);
     }
 
     @Override
@@ -66,7 +64,7 @@ public class Create implements Command {
             manager.create(tableName, dataSet);
             return  String.format(ConfigMsg.getProperty("create.success"), tableName);
         } catch (SQLException e) {
-            return ConfigMsg.getProperty(String.format("create.err.message", tableName));
+            return String.format(ConfigMsg.getProperty("create.err.message"), tableName);
         }
     }
 

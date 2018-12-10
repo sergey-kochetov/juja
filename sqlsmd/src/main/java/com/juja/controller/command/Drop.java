@@ -30,14 +30,12 @@ public class Drop implements Command {
             return;
         }
         String[] data = command.split("[|]");
-        String reultDrop;
         if (data.length != CORRECT_LENGTH) {
-            reultDrop = String.format(ConfigMsg.getProperty("drop.err.format"),
-                    format(), command);
+            view.write(String.format(ConfigMsg.getProperty("drop.err.format"),
+                    format(), command));
         } else {
-            reultDrop = dropTable(data[1]);
+            view.write(dropTable(data[1]));
         }
-        view.write(reultDrop);
     }
 
     @Override

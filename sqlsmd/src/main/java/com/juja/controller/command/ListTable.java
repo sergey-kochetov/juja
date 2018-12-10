@@ -22,12 +22,16 @@ public class ListTable implements Command {
     }
 
     @Override
-    public void process(String command) throws SQLException {
-        List<String> tableNames = manager.getTableNames();
-
-        String message = tableNames.toString();
-
-        view.write(message);
+    public void process(String command) {
+        if (!canProcess(command)) {
+            return;
+        }
+        try {
+            List<String> tableNames = manager.getTableNames();
+            view.write(tableNames.toString());
+        } catch (SQLException e) {
+            view.write(ConfigMsg.getProperty("tables.err.format"));
+        }
     }
 
     @Override
