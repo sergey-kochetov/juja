@@ -26,27 +26,18 @@ public class Delete implements Command {
     }
 
     @Override
-    public void process(String command) throws SQLException {
+    public void process(String command) {
         if (!canProcess(command)) {
             return;
         }
         String[] data = command.split("[|]");
-        if (!(data.length >= CORRECT_LENGTH && data.length % 2 == 0)) {
-            throw new IllegalArgumentException(
-                    String.format(ConfigMsg.getProperty("delete.err.format"), format(), command));
+        String resultDelete;
+        if (!isCorrect(data)) {
+            resultDelete = String.format(ConfigMsg.getProperty("delete.err.format"), format(), command);
+        } else {
+            resultDelete = deleteTable(data);
         }
-        String tableName = data[1];
-
-        Map<String, Object> dataSet = UtilsCommand.getDataMap();
-        for (int i = 1; i < data.length / 2; i++) {
-            String columnName = data[i * 2];
-            String value = data[i * 2 + 1];
-
-            dataSet.put(columnName, value);
-        }
-        manager.delete(tableName, dataSet);
-
-        view.write(String.format(ConfigMsg.getProperty("delete.success"), tableName));
+        view.write(resultDelete);
     }
 
     @Override
@@ -58,4 +49,27 @@ public class Delete implements Command {
     public String description() {
         return ConfigMsg.getProperty("delete.description");
     }
+
+    private String deleteTable(String[] data) {
+        String resultDelete;
+        String tableName = data[1];
+        Map<String, Object> dataSet = UtilsCommand.getDataMap();
+        for (int i = 1; i < data.length / 2; i++) {
+            String columnName = data[i * 2];
+            String value = data[i * 2 + 1];
+            dataSet.put(columnName, value);
+        }
+        try {
+            manager.delete(tableName, dataSet);
+            resultDelete = String.format(ConfigMsg.getProperty("delete.success"), tableName);
+        } catch (SQLException e) {
+            resultDelete = String.format(ConfigMsg.getProperty("delete.err.message"), tableName);
+        }
+        return resultDelete;
+    }
+
+    private boolean isCorrect(String[] data) {
+        return data.length >= CORRECT_LENGTH && data.length % 2 == 0;
+    }
+
 }

@@ -21,12 +21,17 @@ public class Disconnect implements Command {
     }
 
     @Override
-    public void process(String command) throws SQLException {
+    public void process(String command) {
         if (!canProcess(command)) {
             return;
         }
-        manager.disconnect();
-        view.write(ConfigMsg.getProperty("disconnect.success"));
+        try {
+            manager.disconnect();
+            view.write(ConfigMsg.getProperty("disconnect.success"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

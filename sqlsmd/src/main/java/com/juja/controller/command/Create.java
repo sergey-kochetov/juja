@@ -27,24 +27,19 @@ public class Create implements Command {
     }
 
     @Override
-    public void process(String command) throws SQLException {
+    public void process(String command) {
         if (!canProcess(command)) {
             return;
         }
         String[] data = command.split("[|]");
-        if (!(data.length >= CORRECT_LENGTH && data.length % 2 == 0)) {
-            throw new IllegalArgumentException(
-                    String.format(ConfigMsg.getProperty("create.err.format"), format(), command));
+        String resultCreate;
+        if (!isCorrect(data)) {
+            resultCreate = String.format(ConfigMsg.getProperty("create.err.format"),
+                    format(), command);
+        } else {
+            resultCreate = createTable(data);
         }
-        String tableName = data[1];
-
-        List<String> dataSet = UtilsCommand.getDataList();
-        for (int i = 2; i < data.length; i+=2) {
-            dataSet.add(String.format("%s %s", data[i], data[i + 1]));
-        }
-        manager.create(tableName, dataSet);
-
-        view.write(String.format(ConfigMsg.getProperty("create.success"), data[1]));
+        view.write(resultCreate);
     }
 
     @Override
@@ -56,4 +51,23 @@ public class Create implements Command {
     public String description() {
         return  ConfigMsg.getProperty("create.description");
     }
+
+    private boolean isCorrect(String[] data) {
+        return data.length >= CORRECT_LENGTH && data.length % 2 == 0;
+    }
+
+    private String createTable(String[] data) {
+        String tableName = data[1];
+        List<String> dataSet = UtilsCommand.getDataList();
+        for (int i = 2; i < data.length; i+=2) {
+            dataSet.add(String.format("%s %s", data[i], data[i + 1]));
+        }
+        try {
+            manager.create(tableName, dataSet);
+            return  String.format(ConfigMsg.getProperty("create.success"), tableName);
+        } catch (SQLException e) {
+            return ConfigMsg.getProperty(String.format("create.err.message", tableName));
+        }
+    }
+
 }
