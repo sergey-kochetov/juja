@@ -1,31 +1,20 @@
 package com.juja.controller.command;
 
 import com.juja.controller.UtilsCommand;
-import com.juja.model.DatabaseManager;
-import com.juja.view.View;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
-public class ClearTest {
-
-    private View view = Mockito.mock(View.class);
-    private DatabaseManager manager;
-    private Command command;
-
+public class ClearTest extends CommandHelperTest {
     @Before
     public void setup() {
-        manager = mock(DatabaseManager.class);
-        view = mock(View.class);
         command = new Clear(manager, view);
     }
 
@@ -35,7 +24,7 @@ public class ClearTest {
         boolean canProcess = command.canProcess("clear|table");
 
         // then
-        assertEquals(true, canProcess);
+        assertTrue(canProcess);
     }
 
     @Test
@@ -44,26 +33,31 @@ public class ClearTest {
         boolean canProcess = command.canProcess("novalid|table");
 
         // then
-        assertEquals(false, canProcess);
+        assertFalse(canProcess);
     }
 
     @Test
     public void testPrintEmptyTableData() throws SQLException {
         // given
         List<String> list = UtilsCommand.getDataList();
-        list.add("c_id");
-        list.add("c_name");
-        list.add("c_password");
-        when(manager.getTableColumns("customer"))
-                .thenReturn(list);
+        list.add("id");
+        list.add("name");
+        list.add("password");
+        when(manager.getTableColumns("test")).thenReturn(list);
 
-        when(manager.getTableData("customer")).thenReturn(Collections.EMPTY_LIST);
+        when(manager.getTableData("test")).thenReturn(Collections.EMPTY_LIST);
 
         // when
-        command.process("clear|customer");
+        command.process("clear|test");
+        command = new Find(manager, view);
+        command.process("find|test");
 
         // then
-        shouldPrint("[table 'customer' was successfully cleared]");
+        shouldPrint("table 'test' was successfully cleared\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|id     |name           |password       |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "+-------+---------------+---------------+");
     }
 
     @Test
@@ -74,7 +68,7 @@ public class ClearTest {
         list.add("c_name");
         list.add("c_password");
 
-        when(manager.getTableColumns("customer"))
+        when(manager.getTableColumns("test"))
                 .thenReturn(list);
 
         Map<String, Object> user1 = UtilsCommand.getDataMap();
@@ -90,21 +84,21 @@ public class ClearTest {
         List<Map<String, Object>> data = UtilsCommand.getDataListMap();
         data.add(user1);
         data.add(user2);
-        when(manager.getTableData("customer"))
+        when(manager.getTableData("test"))
                 .thenReturn(data);
 
         // when
-        command.process("clear|customer");
+        command.process("clear|test");
+        command = new Find(manager, view);
+        command.process("find|test");
 
         // then
-        shouldPrint("[table 'customer' was successfully cleared]");
+        shouldPrint("table 'test' was successfully cleared\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|c_id   |c_name         |c_password     |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|12     |Stiven         |*****          |\r\n" +
+                "|13     |Eva            |+++++          |\r\n" +
+                "+-------+---------------+---------------+");
     }
-
-    private void shouldPrint(String expected) {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(view, atLeastOnce()).write(captor.capture());
-        assertEquals(expected, captor.getAllValues().toString());
-    }
-
-
 }
