@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class ClearTest extends CommandHelperTest {
@@ -30,10 +31,26 @@ public class ClearTest extends CommandHelperTest {
     @Test
     public void testCanProcessClearWithParametersNovalidString() {
         //when
-        boolean canProcess = command.canProcess("novalid|table");
+        boolean canProcess = command.canProcess("no|table");
 
         // then
         assertFalse(canProcess);
+    }
+
+    @Test
+    public void shouldClearWhenNovalidCommand() {
+        // given
+        command.process("clear");
+        // then
+        shouldPrint("format clear|tableName, but was: clear");
+    }
+
+    @Test
+    public void shouldClearWhenNovalidCommand2() {
+        // given
+        command.process("clear|table|table");
+        // then
+        shouldPrint("format clear|tableName, but was: clear|table|table");
     }
 
     @Test
@@ -89,16 +106,8 @@ public class ClearTest extends CommandHelperTest {
 
         // when
         command.process("clear|test");
-        command = new Find(manager, view);
-        command.process("find|test");
 
         // then
-        shouldPrint("table 'test' was successfully cleared\r\n" +
-                "+-------+---------------+---------------+\r\n" +
-                "|c_id   |c_name         |c_password     |\r\n" +
-                "+-------+---------------+---------------+\r\n" +
-                "|12     |Stiven         |*****          |\r\n" +
-                "|13     |Eva            |+++++          |\r\n" +
-                "+-------+---------------+---------------+");
+        shouldPrint("table 'test' was successfully cleared");
     }
 }

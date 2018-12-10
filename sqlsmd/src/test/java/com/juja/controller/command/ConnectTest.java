@@ -1,7 +1,5 @@
 package com.juja.controller.command;
 
-import com.juja.model.DatabaseManager;
-import com.juja.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -9,19 +7,12 @@ import org.mockito.Mockito;
 import java.sql.SQLException;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.*;
 
-public class ConnectTest {
-
-    private DatabaseManager manager;
-    private View view;
-    private Command command;
-
+public class ConnectTest extends CommandHelperTest {
     @Before
     public void setup() {
-        manager = mock(DatabaseManager.class);
-        view = mock(View.class);
         command = new Connect(manager, view);
     }
 
@@ -53,7 +44,7 @@ public class ConnectTest {
     }
 
     @Test
-    public void process() throws SQLException {
+    public void process() {
         // given
         String request = "connect|sqlsmd|postgres|postgres";
 
@@ -61,62 +52,63 @@ public class ConnectTest {
         command.process(request);
 
         // then
-        Mockito.verify(view).write("Connect Successful");
+        shouldPrint("Connect Successful");
     }
 
     @Test
-    public void processWithShortCommand() throws SQLException {
+    public void processWithShortCommand() {
+        // given
         String request = "connect|anyDB|anyUser";
-        try {
-            command.process(request);
 
-        } catch (IllegalArgumentException e) {
-            assertEquals("No valid data '|' actual 4, but was: 3", e.getMessage());
-        }
+        // when
+        command.process(request);
+
+        // then
+        shouldPrint("No valid data '|' actual 4, but was: 3");
     }
 
     @Test
     public void processWithNormalWorkFromManager() throws SQLException {
+        // given
         String com = "connect|anyDB|anyUser|anyPassword";
         String db = "anyDB";
         String user = "anyUser";
         String password = "anyPassword";
-        //manager.connect ничего не вернет, если получит именно эти команды
-        Mockito.doNothing().when(manager).connect(db,user,password);
+
+        // when
+        doNothing().when(manager).connect(db,user,password);
         command.process(com);
-        //Соль теста, - проверяем, выведет ли вьюха это сообщение при условии того, что
-        //command у нас соответствует параметрам по к-ву элементов и тому, сто первый элемент   .equals"connect"?
-        Mockito.verify(view).write("Connect Successful");
-        //Да все гут), но смысла этого теста нет.
-        //по умолчанию мок войда и так ничего не возвращает
+
+        // then
+        shouldPrint("Connect Successful");
+
     }
 
 
     @Test
     public void processWithSQLExceptionFromManager() throws SQLException {
-        String com = "connect|anyDB|anyUser|anyPassword";
-        String db = "anyDB";
-        String user = "anyUser";
-        String password = "anyPassword";
-        //теперь при вызове метода он по любому выбросит SQLException
-        //Mockito.doThrow(new SQLException()).when(manager).connect(db, user, password);
+        // given
+        String com = "connect|";
 
-            command.process(com);
+        // when
+        doNothing().when(manager).defaultConnect();
+        command.process(com);
 
-
-         //   assertEquals("java.sql.SQLException", ex.toString());
-
+        // then
+        shouldPrint("Connect Successful");
     }
 
     @Test
     public void processWithRuntimeExceptionFromManager() throws SQLException {
-        String com = "connect|anyDB|anyUser|anyPassword";
-        //теперь при вызове метода он по любому выбросит RuntimeException
-        Mockito.doThrow(new RuntimeException()).when(manager).connect("", "", "");
+        //given
+        String com = "connect|x|x|x";
+
+        // when
+        doThrow(new SQLException()).when(manager).connect("x", "x", "x");
         command.process(com);
-        //Соль теста, - проверяем, выведет ли вьюха это сообщение при условии того, что
-        //command у нас соответствует параметрам по к-ву элементов и тому, сто первый элемент.equals"connect"?
-        Mockito.verify(view).write("Connect Successful");
+
+        // then
+        verify(view).write("Cant get connection for model:x user:x");
     }
 
 }
