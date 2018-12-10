@@ -21,7 +21,7 @@ public class JDBCDatabaseManager implements DatabaseManager  {
             "WHERE table_schema=? AND table_name = ?";
     private static final String CLEAR_TABLE = "TRUNCATE ";
     private static final String SQL_CREATE_TABLE = "CREATE TABLE ? (?)";
-    private static final String DELETE_DATA = "DELETE FROM ? WHERE (?)";
+    private static final String DELETE_DATA = "DELETE FROM %s WHERE (%s)";
 
     private Connection connection;
 
@@ -123,10 +123,8 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public void delete(String tableName,  Map<String, Object> delValue) throws SQLException {
         checkConnection();
         String delete = getNameValuesFormated(delValue, "%s='%s'");
-        try (PreparedStatement stmt= connection.prepareStatement(DELETE_DATA)) {
-            stmt.setString(1, tableName);
-            stmt.setString(2, delete);
-            stmt.executeUpdate();
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(String.format(DELETE_DATA, tableName, delete));
         }
     }
 

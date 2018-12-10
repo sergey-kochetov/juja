@@ -59,7 +59,7 @@ public class Delete implements Command {
         }
         try {
             manager.delete(tableName, dataSet);
-            resultDelete = String.format(ConfigMsg.getProperty("delete.success"), tableName);
+            resultDelete = String.format(ConfigMsg.getProperty("delete.success"), dataSet.toString(), tableName);
         } catch (SQLException e) {
             resultDelete = String.format(ConfigMsg.getProperty("delete.err.message"), tableName);
         }

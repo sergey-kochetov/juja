@@ -79,6 +79,7 @@ public class IntegrationTest {
                 "Enter please connect|database|userName|password\r\n" +
                 "bye...\r\n", getData());
     }
+
     @Test
     public void testHelp() {
         // given
@@ -117,6 +118,7 @@ public class IntegrationTest {
                         "Enter command (or 'help'): \r\n" +
                         "bye...\r\n", getData());
     }
+
     @Test
     public void testListAndExit(){
         // given
@@ -134,6 +136,7 @@ public class IntegrationTest {
                 "Enter command (or 'help'): \r\n" +
                 "bye...\r\n", getData());
     }
+
     @Test
     public void testUnsupported(){
         // given
@@ -151,6 +154,7 @@ public class IntegrationTest {
                 "Enter command (or 'help'): \r\n" +
                 "bye...\r\n", getData());
     }
+
     @Test
     public void testFindAfterConnect(){
         // given
@@ -171,6 +175,7 @@ public class IntegrationTest {
                 "Enter command (or 'help'): \r\n" +
                 "bye...\r\n", getData());
     }
+
     @Test
     public void testFindWithAfterConnect(){
         // given
@@ -197,6 +202,7 @@ public class IntegrationTest {
                 "Enter command (or 'help'): \r\n" +
                 "bye...\r\n", getData());
     }
+
     @Test
     public void testFindWithConnect_withData(){
         // given
@@ -232,11 +238,94 @@ public class IntegrationTest {
                 "bye...\r\n", getData());
     }
 
+    @Test
+    public void testUpdateWithConnect_withData(){
+        // given
+
+        in.add("connect|sqlsmd|postgres|postgres");
+        in.add("clear|customer");
+        in.add("insert|customer|c_id|13|c_name|adam|c_password|***");
+        in.add("insert|customer|c_id|14|c_name|eva|c_password|+++");
+        in.add("find|customer");
+        in.add("update|customer|13|c_name|newAdam|c_password|***2");
+        in.add("update|customer|14|c_name|newEva|c_password|+++2");
+        in.add("find|customer");
+        in.add("exit");
+
+        // when
+        Main.main(new String[0]);
+
+        // then
+        assertEquals("Welcome to sqlsmd.\r\n" +
+                "Enter please connect|database|userName|password\r\n" +
+                "Connect Successful\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "table 'customer' was successfully cleared\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "'{c_id=13, c_name=adam, c_password=***}' was successfully created in table 'customer'\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "'{c_id=14, c_name=eva, c_password=+++}' was successfully created in table 'customer'\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|c_id   |c_name         |c_password     |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|13     |adam           |***            |\r\n" +
+                "|14     |eva            |+++            |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "data successfully updated to tables 'customer'\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "data successfully updated to tables 'customer'\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|c_id   |c_name         |c_password     |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|13     |newAdam        |***2           |\r\n" +
+                "|14     |newEva         |+++2           |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "bye...\r\n", getData());
+    }
+
+    @Test
+    public void testDeleteWithConnect_withData(){
+        // given
+
+        in.add("connect|sqlsmd|postgres|postgres");
+        in.add("insert|customer|c_id|13|c_name|Adam|c_password|***");
+        in.add("insert|customer|c_id|14|c_name|Eva|c_password|+++");
+        in.add("delete|customer|c_name|Adam");
+        in.add("find|customer");
+        in.add("exit");
+
+        // when
+        Main.main(new String[0]);
+
+        // then
+        assertEquals("Welcome to sqlsmd.\r\n" +
+                "Enter please connect|database|userName|password\r\n" +
+                "Connect Successful\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "'{c_id=13, c_name=Adam, c_password=***}' was successfully created in table 'customer'\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "'{c_id=14, c_name=Eva, c_password=+++}' was successfully created in table 'customer'\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "data '{c_name=Adam}' table 'customer' was successfully deleted\r\n" +
+                "Enter command (or 'help'): \r\n"+
+                "+-------+---------------+---------------+\r\n" +
+                "|c_id   |c_name         |c_password     |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|14     |Eva            |+++            |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "Enter command (or 'help'): \r\n" +
+                "bye...\r\n", getData());
+    }
 
     private String getData() {
         try {
             String result = new String(out.toByteArray(), "UTF-8");
             out.reset();
+            result.replaceAll("\r\n", "\n");
             return result;
         } catch (UnsupportedEncodingException e) {
             return e.getMessage();
