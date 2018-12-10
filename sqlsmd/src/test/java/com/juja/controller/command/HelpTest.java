@@ -1,29 +1,15 @@
 package com.juja.controller.command;
 
 import com.juja.controller.MainController;
-import com.juja.model.DatabaseManager;
-import com.juja.view.View;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-
-import java.sql.SQLException;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.*;
 
-public class HelpTest {
-
-    private DatabaseManager manager;
-    private View view;
-    private Command command;
-
+public class HelpTest extends CommandHelperTest {
     @Before
     public void setup() {
-        manager = mock(DatabaseManager.class);
-        view = mock(View.class);
         command = new Help(view, new MainController(view, manager).getCommands());
     }
 
@@ -46,20 +32,35 @@ public class HelpTest {
     }
 
     @Test
-    public void testPrintMenuHelp() throws SQLException {
+    public void testPrintMenuHelp() {
         // given
 
         // when
         command.process("help");
 
         // then
-        shouldPrint("[Existing commands, \tconnect|database|userName|password, \t\tfor connect to database, \thelp, \t\tthis page, \texit, \t\tfor exit program, \ttables, \t\tfor get tables database, \tclear|tableName, \t\tdatabase cleaning, \tdrop|tableName, \t\tdrop database, \tinsert|tableName|row1|param1|...|rowN|paramN, \t\tcreate data for database, \tfind|tableName, \t\tfor see table 'tableName', \tupdate|tableName|column1|value1|column2|value2|...|columnN|valueN, \t\tupdate data into a table, \tcreate|tableName|column1|type1|...|columnN|typeN, \t\tcreate new table, \tdelete|tableName|column|value, \t\tdeleting data in the table with parameters]");
+        shouldPrint("Existing commands\r\n" +
+                "\tconnect|database|userName|password\r\n" +
+                "\t\tfor connect to database\r\n" +
+                "\thelp\r\n" +
+                "\t\tthis page\r\n" +
+                "\texit\r\n" +
+                "\t\tfor exit program\r\n" +
+                "\ttables\r\n" +
+                "\t\tfor get tables database\r\n" +
+                "\tclear|tableName\r\n" +
+                "\t\tdatabase cleaning\r\n" +
+                "\tdrop|tableName\r\n" +
+                "\t\tdrop database\r\n" +
+                "\tinsert|tableName|row1|param1|...|rowN|paramN\r\n" +
+                "\t\tcreate data for database\r\n" +
+                "\tfind|tableName\r\n" +
+                "\t\tfor see table 'tableName'\r\n" +
+                "\tupdate|tableName|column1|value1|column2|value2|...|columnN|valueN\r\n" +
+                "\t\tupdate data into a table\r\n" +
+                "\tcreate|tableName|column1|type1|...|columnN|typeN\r\n" +
+                "\t\tcreate new table\r\n" +
+                "\tdelete|tableName|column|value\r\n" +
+                "\t\tdeleting data in the table with parameters");
     }
-
-    private void shouldPrint(String expected) {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(view, atLeastOnce()).write(captor.capture());
-        assertEquals(expected, captor.getAllValues().toString());
-    }
-
 }

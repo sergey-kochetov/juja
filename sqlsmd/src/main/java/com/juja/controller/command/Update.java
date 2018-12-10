@@ -52,11 +52,11 @@ public class Update implements Command {
     private String updateTable(String[] data) {
         String tableName = data[1];
         Map<String, Object> map = UtilsCommand.getDataMap();
-        for (int i = 2; i < data.length ; i += 2) {
+        for (int i = 3; i < data.length ; i += 2) {
             map.put(data[i], data[i + 1]);
         }
         try {
-            manager.update(tableName,0, map);
+            manager.update(tableName, Integer.valueOf(data[2]), map);
             return String.format(ConfigMsg.getProperty("update.success") ,tableName);
         } catch (SQLException e) {
             return String.format(ConfigMsg.getProperty("update.err.format2"), data[1]);
@@ -64,6 +64,6 @@ public class Update implements Command {
     }
 
     private boolean isCorrect(String[] data) {
-        return data.length > CORRECT_LENGTH && data.length % CORRECT_LENGTH == 0;
+        return data.length > CORRECT_LENGTH && data.length % CORRECT_LENGTH == 1;
     }
 }

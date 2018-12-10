@@ -1,27 +1,17 @@
 package com.juja.controller.command;
 
-import com.juja.model.DatabaseManager;
-import com.juja.view.View;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class DropTest {
-
-    private View view;
-    private DatabaseManager manager;
-    private Command command;
-
+public class DropTest extends CommandHelperTest {
     @Before
     public void setup() {
-        manager = mock(DatabaseManager.class);
-        view = mock(View.class);
         command = new Drop(manager, view);
     }
 
@@ -44,35 +34,25 @@ public class DropTest {
     }
 
     @Test
-    public void testDropTable() throws SQLException {
+    public void testDropTable() {
         // given
 
         // when
         command.process("drop|customer");
 
         // then
-        shouldPrint("[table 'customer' was successfully droped]");
+        shouldPrint("table 'customer' was successfully droped");
     }
 
     @Test
     public void testDropEmptyTable() throws SQLException {
         // given
-        Mockito.doThrow(new SQLException()).when(manager).drop("customer");
+        Mockito.doThrow(new SQLException()).when(manager).drop("test");
+
         // when
-        try {
-            command.process("drop|customer");
-        } catch (IllegalArgumentException e) {
-            assertEquals("table 'customer' does not exist", e.getMessage());
-        }
+        command.process("drop|test");
+
+        // then
+        shouldPrint("table 'test' does not exist");
     }
-
-    private void shouldPrint(String expected) {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(view, atLeastOnce()).write(captor.capture());
-        assertEquals(expected, captor.getAllValues().toString());
-    }
-
-
-
-
 }

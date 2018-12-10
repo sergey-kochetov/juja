@@ -1,31 +1,20 @@
 package com.juja.controller.command;
 
 
-import com.juja.model.DatabaseManager;
-import com.juja.view.View;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.sql.SQLException;
 import java.util.*;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
-public class FindTest {
-
-    private DatabaseManager manager;
-    private View view;
-    private Command command;
-
+public class FindTest extends CommandHelperTest {
     @Before
     public void setup() {
-        manager = mock(DatabaseManager.class);
-        view = mock(View.class);
         command = new Find(manager, view);
     }
 
@@ -60,19 +49,13 @@ public class FindTest {
         command.process("find|customer");
 
         // then
-        shouldPrint("[" +
-                "+-------+---------------+---------------+, " +
-                "|c_id   |c_name         |c_password     |, " +
-                "+-------+---------------+---------------+, " +
-                "|12     |Stiven         |*****          |, " +
-                "|13     |Eva            |+++++          |, " +
-                "+-------+---------------+---------------+]");
-    }
-
-    private void shouldPrint(String expected) {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(view, atLeastOnce()).write(captor.capture());
-        assertEquals(expected, captor.getAllValues().toString());
+        shouldPrint("" +
+                "+-------+---------------+---------------+\r\n" +
+                "|c_id   |c_name         |c_password     |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "|12     |Stiven         |*****          |\r\n" +
+                "|13     |Eva            |+++++          |\r\n" +
+                "+-------+---------------+---------------+");
     }
 
     @Test
@@ -90,7 +73,7 @@ public class FindTest {
         boolean canProcess = command.canProcess("find");
 
         // then
-        assertEquals(false, canProcess);
+        assertFalse(canProcess);
     }
 
     @Test
@@ -118,11 +101,11 @@ public class FindTest {
         command.process("find|customer");
 
         // then
-        shouldPrint("[" +
-                "+-------+---------------+---------------+, " +
-                "|c_id   |c_name         |c_password     |, " +
-                "+-------+---------------+---------------+, " +
-                "+-------+---------------+---------------+]");
+        shouldPrint("" +
+                "+-------+---------------+---------------+\r\n" +
+                "|c_id   |c_name         |c_password     |\r\n" +
+                "+-------+---------------+---------------+\r\n" +
+                "+-------+---------------+---------------+");
     }
 
     @Test
@@ -148,12 +131,24 @@ public class FindTest {
         command.process("find|test");
 
         // then
-        shouldPrint("[" +
-                "+-------+, " +
-                "|c_id   |, " +
-                "+-------+, " +
-                "|12     |, " +
-                "|13     |, " +
-                "+-------+]");
+        shouldPrint("" +
+                "+-------+\r\n" +
+                "|c_id   |\r\n" +
+                "+-------+\r\n" +
+                "|12     |\r\n" +
+                "|13     |\r\n" +
+                "+-------+");
+    }
+
+    @Test
+    public void shouldSQLExceptionThenPrintError() throws SQLException {
+        // given
+        String com = "find|test";
+
+        // when
+        doThrow(new SQLException()).when(manager).getTableColumns("test");
+        doThrow(new SQLException()).when(manager).getTableData("test");
+        command.process(com);
+        shouldPrint("table 'test' not found");
     }
 }

@@ -2,7 +2,6 @@ package com.juja.controller.command;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.sql.SQLException;
 
@@ -81,12 +80,10 @@ public class ConnectTest extends CommandHelperTest {
 
         // then
         shouldPrint("Connect Successful");
-
     }
 
-
     @Test
-    public void processWithSQLExceptionFromManager() throws SQLException {
+    public void processWithDefaultFromManager() throws SQLException {
         // given
         String com = "connect|";
 
@@ -99,7 +96,7 @@ public class ConnectTest extends CommandHelperTest {
     }
 
     @Test
-    public void processWithRuntimeExceptionFromManager() throws SQLException {
+    public void processWithSQLExceptionFromManager() throws SQLException {
         //given
         String com = "connect|x|x|x";
 
@@ -110,5 +107,4 @@ public class ConnectTest extends CommandHelperTest {
         // then
         verify(view).write("Cant get connection for model:x user:x");
     }
-
 }

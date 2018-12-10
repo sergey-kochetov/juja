@@ -1,30 +1,19 @@
 package com.juja.controller.command;
 
 import com.juja.controller.UtilsCommand;
-import com.juja.model.DatabaseManager;
-import com.juja.view.View;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
-public class ListTableTest {
-
-    private DatabaseManager manager;
-    private View view;
-    private Command command;
-
+public class ListTableTest extends CommandHelperTest {
     @Before
     public void setup() {
-        manager = mock(DatabaseManager.class);
-        view = mock(View.class);
         command = new ListTable(manager, view);
     }
 
@@ -57,20 +46,24 @@ public class ListTableTest {
     public void testListDataWithEmptyTable() throws SQLException {
         // given
         List<String> list = UtilsCommand.getDataList();
-        when(manager.getTableNames())
-                .thenReturn(list);
+        when(manager.getTableNames()).thenReturn(list);
+
         // when
         command.process("tables");
 
         // then
         shouldPrint("[]");
     }
+    @Test
+    public void shouldSQLExceptionThenPrintError() throws SQLException {
+        // given
+        String com = "tables";
+        doThrow(new SQLException()).when(manager).getTableData("test");
 
-    private void shouldPrint(String expected) {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(view, atLeastOnce()).write(captor.capture());
-        assertEquals(expected, captor.getValue());
+        // when
+        command.process(com);
+
+        // then
+        shouldPrint("[]");
     }
-
-
 }

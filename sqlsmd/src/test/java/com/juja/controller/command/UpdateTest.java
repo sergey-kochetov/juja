@@ -1,28 +1,21 @@
 package com.juja.controller.command;
 
-import com.juja.model.DatabaseManager;
-import com.juja.view.View;
+import com.juja.controller.UtilsCommand;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 
-public class UpdateTest {
-    private View view;
-    private DatabaseManager manager;
-    private Command command;
-
+public class UpdateTest extends CommandHelperTest {
     @Before
     public void setup() {
-        manager = mock(DatabaseManager.class);
-        view = mock(View.class);
         command = new Update(manager, view);
     }
 
@@ -45,33 +38,38 @@ public class UpdateTest {
     }
 
     @Test
-    public void testUpdateTable() throws SQLException {
+    public void testUpdateTable() {
         // given
 
         // when
-        command.process("update|test|column1|type1");
+        command.process("update|test|1|column1|type1");
 
         // then
-        shouldPrint("[data successfully updated to tables 'test']");
-}
+        shouldPrint("data successfully updated to tables 'test'");
+    }
 
     @Test
-    public void testUpdateEmptyTable() throws SQLException {
+    public void testUpdateEmptyTableIncorrect() throws SQLException {
         // given
-        Mockito.doThrow(new SQLException()).when(manager).drop("test");
+        doThrow(new SQLException()).when(manager).update("test", 1, UtilsCommand.getDataMap());
+
         // when
-        try {
-            command.process("update|test|");
-        } catch (IllegalArgumentException e) {
-            assertEquals("format create|tableName|column1|type1|..." +
-                    "|columnN|typeN, but was: create|test", e.getMessage());
-        }
+        command.process("update|test|1|x");
+
+        // then
+        shouldPrint("format update|tableName|column1|value1|column2|value2|" +
+                "...|columnN|valueN, but was: update|test|1|x");
     }
 
-    private void shouldPrint(String expected) {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(view, atLeastOnce()).write(captor.capture());
-        assertEquals(expected, captor.getAllValues().toString());
-    }
+    @Test
+    public void testUpdateEmptyTableError() throws SQLException {
+        // given
+        doThrow(new SQLException()).when(manager).update(anyString(), anyInt(), anyMap());
 
+        // when
+        command.process("update|test|1|column1|value1");
+
+        // then
+        shouldPrint("incorrect data to update the table 'test'");
+    }
 }
