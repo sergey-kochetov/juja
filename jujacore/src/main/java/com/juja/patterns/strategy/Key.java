@@ -1,4 +1,4 @@
-package com.juja.strategy;
+package com.juja.patterns.strategy;
 
 public interface Key {
     String getCode();

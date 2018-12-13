@@ -1,4 +1,4 @@
-package com.juja.strategy;
+package com.juja.patterns.strategy;
 
 import java.util.Arrays;
 

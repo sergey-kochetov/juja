@@ -1,4 +1,4 @@
-package com.juja.strategy;
+package com.juja.patterns.strategy;
 
 public class LockImpl implements  Lock {
 
