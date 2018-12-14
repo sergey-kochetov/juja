@@ -1,11 +1,10 @@
 package com.juja.model;
 
-import com.juja.controller.Main;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface DatabaseManager {
 
@@ -15,11 +14,11 @@ public interface DatabaseManager {
 
     Connection getConnection() throws SQLException;
 
-    List<Map<String, Object>> getTableData(String tableName) throws SQLException;
+    Set<Map<String, Object>> getTableData(String tableName) throws SQLException;
 
     int getSize(String tableName) throws SQLException;
 
-    List<String> getTableNames() throws SQLException;
+    Set<String> getTableNames() throws SQLException;
 
     void clear(String tableName) throws SQLException;
 
@@ -33,7 +32,7 @@ public interface DatabaseManager {
 
     void update(String tableName, int id, Map<String, Object> newValue) throws SQLException;
 
-    List<String> getTableColumns(String tableName) throws SQLException;
+    Set<String> getTableColumns(String tableName) throws SQLException;
 
     void disconnect() throws SQLException;
 

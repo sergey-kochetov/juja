@@ -1,11 +1,12 @@
 package com.juja.controller.command;
 
-import com.juja.controller.UtilsCommand;
+import com.juja.controller.util.UtilsCommand;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.doThrow;
@@ -30,7 +31,7 @@ public class ListTableTest extends CommandHelperTest {
     @Test
     public void testListDataWithOneTable() throws SQLException {
         // given
-        List<String> list = UtilsCommand.getDataList();
+        Set<String> list = UtilsCommand.getDataSet();
         list.add("test1");
         list.add("test2");
         when(manager.getTableNames())
@@ -45,7 +46,7 @@ public class ListTableTest extends CommandHelperTest {
     @Test
     public void testListDataWithEmptyTable() throws SQLException {
         // given
-        List<String> list = UtilsCommand.getDataList();
+        Set<String> list = UtilsCommand.getDataSet();
         when(manager.getTableNames()).thenReturn(list);
 
         // when

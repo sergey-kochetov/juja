@@ -1,6 +1,6 @@
 package com.juja.controller.command;
 
-import com.juja.controller.UtilsCommand;
+import com.juja.controller.util.UtilsCommand;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -56,13 +57,13 @@ public class ClearTest extends CommandHelperTest {
     @Test
     public void testPrintEmptyTableData() throws SQLException {
         // given
-        List<String> list = UtilsCommand.getDataList();
+        Set<String> list = UtilsCommand.getDataSet();
         list.add("id");
         list.add("name");
         list.add("password");
-        when(manager.getTableColumns("test")).thenReturn(list);
+        when(manager.getTableColumns("test")).thenReturn((Set<String>) list);
 
-        when(manager.getTableData("test")).thenReturn(Collections.EMPTY_LIST);
+        when(manager.getTableData("test")).thenReturn(Collections.EMPTY_SET);
 
         // when
         command.process("clear|test");
@@ -80,7 +81,7 @@ public class ClearTest extends CommandHelperTest {
     @Test
     public void testPrintClearTableData() throws SQLException {
         // given
-        List<String> list = UtilsCommand.getDataList();
+        Set<String> list = UtilsCommand.getDataSet();
         list.add("c_id");
         list.add("c_name");
         list.add("c_password");
@@ -98,7 +99,7 @@ public class ClearTest extends CommandHelperTest {
         user2.put("c_name", "Eva");
         user2.put("c_password", "+++++");
 
-        List<Map<String, Object>> data = UtilsCommand.getDataListMap();
+        Set<Map<String, Object>> data = UtilsCommand.getDataSetMap();
         data.add(user1);
         data.add(user2);
         when(manager.getTableData("test"))

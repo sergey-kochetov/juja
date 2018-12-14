@@ -1,7 +1,7 @@
 package com.juja.controller.command;
 
 import com.juja.config.ConfigMsg;
-import com.juja.controller.UtilsCommand;
+import com.juja.controller.util.UtilsCommand;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 

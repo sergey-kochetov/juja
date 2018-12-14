@@ -1,6 +1,7 @@
 package com.juja.controller.command;
 
 
+import com.juja.controller.util.UtilsCommand;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ public class FindTest extends CommandHelperTest {
     @Test
     public void testPrintTableData() throws SQLException {
         // given
-        List<String> list = new LinkedList<String>();
+        Set<String> list =UtilsCommand.getDataSet();
         list.add("c_id");
         list.add("c_name");
         list.add("c_password");
@@ -39,7 +40,7 @@ public class FindTest extends CommandHelperTest {
         user2.put("c_name", "Eva");
         user2.put("c_password", "+++++");
 
-        List<Map<String, Object>> data = new LinkedList<>();
+        Set<Map<String, Object>> data = UtilsCommand.getDataSetMap();
         data.add(user1);
         data.add(user2);
         when(manager.getTableData("customer"))
@@ -88,14 +89,14 @@ public class FindTest extends CommandHelperTest {
     @Test
     public void testPrintEmptyTableData() throws SQLException {
         // given
-        List<String> list = new LinkedList<String>();
+        Set<String> list = UtilsCommand.getDataSet();
         list.add("c_id");
         list.add("c_name");
         list.add("c_password");
         when(manager.getTableColumns("customer"))
                 .thenReturn(list);
 
-        when(manager.getTableData("customer")).thenReturn(Collections.EMPTY_LIST);
+        when(manager.getTableData("customer")).thenReturn(Collections.EMPTY_SET);
 
         // when
         command.process("find|customer");
@@ -111,7 +112,7 @@ public class FindTest extends CommandHelperTest {
     @Test
     public void testPrintTableDataWithOneColumn() throws SQLException {
         // given
-        List<String> list = new LinkedList<String>();
+        Set<String> list = UtilsCommand.getDataSet();
         list.add("c_id");
         when(manager.getTableColumns("test"))
                 .thenReturn(list);
@@ -122,7 +123,7 @@ public class FindTest extends CommandHelperTest {
         Map<String, Object> user2 = new LinkedHashMap<>();
         user2.put("id", 13);
 
-        List<Map<String, Object>> data = new LinkedList<>();
+        Set<Map<String, Object>> data = UtilsCommand.getDataSetMap();
         data.add(user1);
         data.add(user2);
         when(manager.getTableData("test")).thenReturn(data);

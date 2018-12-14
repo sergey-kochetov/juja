@@ -6,6 +6,7 @@ import com.juja.view.View;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 public class ListTable implements Command {
     private final View view;
@@ -27,7 +28,7 @@ public class ListTable implements Command {
             return;
         }
         try {
-            List<String> tableNames = manager.getTableNames();
+            Set<String> tableNames = manager.getTableNames();
             view.write(tableNames.toString());
         } catch (SQLException e) {
             view.write(ConfigMsg.getProperty("tables.err.format"));

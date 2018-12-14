@@ -1,12 +1,10 @@
 package com.juja.model;
 
-import com.juja.controller.UtilsCommand;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,7 +33,7 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
 
     @Test
     public void testGetAllTableNames() throws SQLException {
-        List<String> tableNames = manager.getTableNames();
+        Set<String> tableNames = manager.getTableNames();
         assertEquals("[customer]", tableNames.toString());
     }
 
@@ -53,10 +51,11 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         manager.insert(customer, input);
 
         // then
-        List<Map<String, Object>> users = manager.getTableData("customer");
+        Set<Map<String, Object>> users = manager.getTableData("customer");
         assertEquals(1, users.size());
 
-        Map<String, Object> user = users.get(0);
+        Map<String, Object> user = users.stream().findFirst().get();
+       // Map<String, Object> user = users.stream();
         assertEquals("[c_id, c_name, c_password]", user.keySet().toString());
         assertEquals("[13, Stiven, pass]", user.values().toString());
     }
@@ -80,10 +79,10 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         manager.update("customer", 10, newValue);
 
         // then
-        List<Map<String, Object>> users = manager.getTableData("customer");
+        Set<Map<String, Object>> users = manager.getTableData("customer");
         assertEquals(1, users.size());
 
-        Map<String, Object> user = users.get(0);
+        Map<String, Object> user = users.stream().findFirst().get();
         assertEquals("[c_id, c_name, c_password]", user.keySet().toString());
         assertEquals("[10, newName, newPass]", user.values().toString());
     }
@@ -95,7 +94,7 @@ public class JDBCDatabaseManagerTest extends DatabaseManagerTest {
         manager.clear(customer);
 
         // when
-        List<String> columnNames = manager.getTableColumns(customer);
+        Set<String> columnNames = manager.getTableColumns(customer);
 
         // then
         assertEquals("[c_id, c_name, c_password]", columnNames.toString());

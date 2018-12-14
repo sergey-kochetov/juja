@@ -2,7 +2,7 @@ package com.juja.model;
 
 import com.juja.config.ConfigDB;
 import com.juja.config.ConfigMsg;
-import com.juja.controller.UtilsCommand;
+import com.juja.controller.util.UtilsCommand;
 
 import java.sql.*;
 import java.util.*;
@@ -62,13 +62,13 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     @Override
-    public List<Map<String, Object>> getTableData(String tableName) throws SQLException {
+    public Set<Map<String, Object>> getTableData(String tableName) throws SQLException {
         checkConnection();
         try (  Statement stmt = connection.createStatement();
                ResultSet rs = stmt.executeQuery("SELECT * FROM public." + tableName);
         ) {
             ResultSetMetaData rsmd = rs.getMetaData();
-            List<Map<String, Object>> result = UtilsCommand.getDataListMap();
+            Set<Map<String, Object>> result = UtilsCommand.getDataSetMap();
             while (rs.next()) {
                 Map<String, Object> dataSet = UtilsCommand.getDataMap();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -92,12 +92,12 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     @Override
-    public List<String> getTableNames() throws SQLException {
+    public Set<String> getTableNames() throws SQLException {
         checkConnection();
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(SELECT_TABLE_NAMES);
         ) {
-            List<String> tables = UtilsCommand.getDataList();
+            Set<String> tables = UtilsCommand.getDataSet();
             while (rs.next()) {
                 tables.add(rs.getString("table_name"));
             }
@@ -153,7 +153,10 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     public void update(String tableName, int id, Map<String, Object> newValue) throws SQLException {
         checkConnection();
         String tableNames = getNameFormated(newValue, "%s = ?");
-        String nameId = getTableColumns(tableName).get(0);
+        String nameId = getTableColumns(tableName)
+                .stream()
+                .findFirst()
+                .get();
         String sql = String.format(UPDATE_TABLE, tableName, tableNames, nameId);
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             int index = 1;
@@ -167,19 +170,19 @@ public class JDBCDatabaseManager implements DatabaseManager  {
     }
 
     @Override
-    public List<String> getTableColumns(String tableName) throws SQLException {
+    public Set<String> getTableColumns(String tableName) throws SQLException {
         checkConnection();
         try(PreparedStatement stmt = connection.prepareStatement(SQL_GET_TABLE_COLUMNS)) {
             stmt.setString(1, "public");
             stmt.setString(2, tableName);
             ResultSet rs = stmt.executeQuery();
-            List<String> tables = UtilsCommand.getDataList();
+            Set<String> tables = UtilsCommand.getDataSet();
             while (rs.next()) {
                 tables.add(rs.getString("column_name"));
             }
             return tables;
         } catch (SQLException e) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
     }
 

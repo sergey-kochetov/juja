@@ -1,6 +1,6 @@
 package com.juja.controller.command;
 
-import com.juja.controller.UtilsCommand;
+import com.juja.controller.util.UtilsCommand;
 import org.junit.Before;
 import org.junit.Test;
 

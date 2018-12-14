@@ -3,6 +3,7 @@ package com.juja.controller.command;
 import com.google.common.base.Strings;
 
 import com.juja.config.ConfigMsg;
+import com.juja.controller.util.UtilsCommand;
 import com.juja.model.DatabaseManager;
 import com.juja.view.View;
 
@@ -54,8 +55,8 @@ public class Find implements Command {
 
     private void findTable(String tableName) {
         try {
-            List<String> tableColumns = manager.getTableColumns(tableName);
-            List<Map<String, Object>> tableData = manager.getTableData(tableName);
+            List<String> tableColumns = UtilsCommand.getDataList(manager.getTableColumns(tableName));
+            Set<Map<String, Object>> tableData = manager.getTableData(tableName);
             List<Integer> lengthRow = lengthRowData(tableColumns);
 
             printHeader(tableColumns, lengthRow);
@@ -78,7 +79,7 @@ public class Find implements Command {
         return result;
     }
 
-    private void printTable(List<Map<String, Object>> tableData, List<Integer> lengthRow) {
+    private void printTable(Set<Map<String, Object>> tableData, List<Integer> lengthRow) {
         for (Map<String, Object> aTableData : tableData) {
             printRow(aTableData, lengthRow);
         }
