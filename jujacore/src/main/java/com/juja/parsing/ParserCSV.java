@@ -15,40 +15,28 @@ public class ParserCSV {
     //bl2612-26993.csv
     //bl2612-26994.csv
     private static final String FILE_NAME = "D:\\test\\bl2612-26993.csv";
-
     private static List<String> data = new ArrayList<>();
-
     private static List<String> newData = new ArrayList<>();
-
     private static String day = "";
     private static String programName = "";
     private static String time = "";
 
     public static void main(String[] args) {
         readFile(FILE_NAME);
-
         newData = newLine(data);
-
         String newFileName = FILE_NAME.replace(".csv", "_new.csv");
         writeFile(newFileName);
-
-        newData.stream().forEach(System.out::println);
+        //newData.stream().forEach(System.out::println);
     }
 
     public static List<String> newLine(List<String> data) {
         List<String> result = new ArrayList<>();
         try {
             for (String x : data) {
-
                 String line = getNewLine(x);
                 result.add(line);
-
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        System.out.println(result.size());
-
+        } catch (Exception ignored) {}
         return result;
     }
 
@@ -58,7 +46,6 @@ public class ParserCSV {
             return x;
         }
         List<String> result = new ArrayList<>();
-
         boolean flag = false;
 
         if (!strs[1].equals("Program Name")) {
@@ -70,7 +57,7 @@ public class ParserCSV {
         result.add(strs[1]);
 
         if (strs[2].contains("Comment")) {
-            result.add(strs[2]);
+            result.add("Comment");
         } else {
             String comment = "";
             if (!flag && !time.isEmpty()) {
@@ -90,7 +77,7 @@ public class ParserCSV {
             String currentDay = strs[3].split(" ")[0];
             if (!day.equals(currentDay) && !currentDay.equals("1900/01/01")  || day.trim().isEmpty()) {
                 day = currentDay;
-                String removeElement = result.remove(1);
+                result.remove(1);
                 result.add(1,  day);
             }
         }
@@ -100,15 +87,20 @@ public class ParserCSV {
             result.add(strs[4].split(" ")[1]);
             time = strs[4].split(" ")[1];
         }
+        if (strs[5].contains("Board Count Max")) {
+            result.add("Delta Time");
+        } else {
+            result.add(deltaDate(strs[4].split(" ")[1], strs[3].split(" ")[1]));
+        }
         result.add(strs[6]);
         result.add(strs[8]);
         result.add(strs[12]);
         result.add(strs[13]);
         result.add(strs[14]);
-        return result.stream().collect(Collectors.joining(","));
+        return String.join(",", result);
     }
 
-    public static String deltaDate(String start, String end) {
+    private static String deltaDate(String start, String end) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         try {
             long millis = format.parse(start).getTime() -  format.parse(end).getTime();
@@ -125,9 +117,6 @@ public class ParserCSV {
         } catch (Exception e) {
             return "";
         }
-
-
-
     }
 
     private static void writeFile(String newFileName) {
