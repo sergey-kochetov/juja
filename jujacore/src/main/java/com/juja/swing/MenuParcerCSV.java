@@ -1,5 +1,3 @@
-package com.juja.swing;
-
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
@@ -17,6 +15,12 @@ public class MenuParcerCSV extends JFrame implements ActionListener {
     private JMenu file;
     private JMenuItem open;
     private JTextArea ta;
+    private static List<String> data = new ArrayList<>();
+    private static List<String> newData = new ArrayList<>();
+    private static String day = "";
+    private static String programName = "";
+    private static String time = "";
+
     private MenuParcerCSV(){
         open=new JMenuItem("Open File");
         open.addActionListener(this);
@@ -30,6 +34,7 @@ public class MenuParcerCSV extends JFrame implements ActionListener {
         add(mb);
         add(ta);
     }
+
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == open){
             JFileChooser fc=new JFileChooser();
@@ -53,24 +58,6 @@ public class MenuParcerCSV extends JFrame implements ActionListener {
             }
         }
     }
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                MenuParcerCSV om=new MenuParcerCSV();
-                om.setSize(500,500);
-                om.setLayout(null);
-                om.setVisible(true);
-                om.setDefaultCloseOperation(EXIT_ON_CLOSE);
-            }
-        });
-    }
-
-    private static List<String> data = new ArrayList<>();
-    private static List<String> newData = new ArrayList<>();
-    private static String day = "";
-    private static String programName = "";
-    private static String time = "";
 
     private static List<String> newLine(List<String> data) {
         List<String> result = new ArrayList<>();
@@ -113,28 +100,40 @@ public class MenuParcerCSV extends JFrame implements ActionListener {
             result.add(comment);
         }
         if (strs[3].contains("Time")) {
-            result.add(strs[3]);
+            result.add("Start Time");
         } else {
-            result.add(strs[3].split(" ")[1]);
             String currentDay = strs[3].split(" ")[0];
+            String currentTime = strs[3].split(" ")[1];
             if (!day.equals(currentDay) && !currentDay.equals("1900/01/01")  || day.trim().isEmpty()) {
                 day = currentDay;
-                result.remove(1);
-                result.add(1,  day);
+                result.set(1,  day);
+            } else if (currentDay.equals("1900/01/01")) {
+                result.set(1, "error");
+                currentTime = time;
             }
+            result.add(currentTime);
         }
         if (strs[4].contains("Time")) {
-            result.add(strs[4]);
+            result.add("Finish Time");
         } else {
             result.add(strs[4].split(" ")[1]);
             time = strs[4].split(" ")[1];
         }
         if (strs[5].contains("Board Count Max")) {
-            result.add("Delta Time");
+            result.add("Delta");
         } else {
-            result.add(deltaDate(strs[4].split(" ")[1], strs[3].split(" ")[1]));
+            String start = deltaDate(result.get(result.size() - 1), result.get(result.size() - 2));
+            //String start = deltaDate(strs[4].split(" ")[1], strs[3].split(" ")[1]);
+            //if (start.length() == 9) {
+            //    start =  "error";
+            //}
+            result.add(start);
         }
-        result.add(strs[6]);
+        if (strs[6].equals("Board Serial No")) {
+            result.add("BoardNo");
+        } else {
+            result.add(strs[6]);
+        }
         result.add(strs[8]);
         result.add(strs[12]);
         result.add(strs[13]);
@@ -146,7 +145,7 @@ public class MenuParcerCSV extends JFrame implements ActionListener {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         try {
             long millis = format.parse(start).getTime() -  format.parse(end).getTime();
-            return String.format("+%02d:%02d:%02d",
+            String result =  String.format("+%02d:%02d:%02d",
                     //Hours
                     TimeUnit.MILLISECONDS.toHours(millis) -
                             TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis)),
@@ -156,6 +155,12 @@ public class MenuParcerCSV extends JFrame implements ActionListener {
                     //Seconds
                     TimeUnit.MILLISECONDS.toSeconds(millis) -
                             TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+            if (result.startsWith("+00:0")) {
+                result = result.replace("+00:0", "+");
+            } else if (result.startsWith("+00:")) {
+                result = result.replace("+00:", "+");
+            }
+            return result;
         } catch (Exception e) {
             return "";
         }
@@ -178,5 +183,18 @@ public class MenuParcerCSV extends JFrame implements ActionListener {
             throw new Exception("Dont read file: " + fileName);
         }
         data.remove(0);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                MenuParcerCSV om=new MenuParcerCSV();
+                om.setSize(500,500);
+                om.setLayout(null);
+                om.setVisible(true);
+                om.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            }
+        });
     }
 }
