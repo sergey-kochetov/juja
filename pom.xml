@@ -23,6 +23,7 @@
     <modules>
         <module>jujacore</module>
         <module>sqlsmd</module>
+        <module>hibernate</module>
     </modules>
 
     <build>
