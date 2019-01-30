@@ -13,6 +13,7 @@ public class UsersDataSet implements Serializable { // Serializable Important to
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    // Уникальное имя и его нельзя изменять
     @Column(name = "name", unique = true, updatable = false)
     private String name;
 
