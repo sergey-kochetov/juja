@@ -1,4 +1,4 @@
-package com.juja.socet;
+package com.juja.socet.simple;
 
 import java.io.BufferedReader;
 import java.io.IOException;

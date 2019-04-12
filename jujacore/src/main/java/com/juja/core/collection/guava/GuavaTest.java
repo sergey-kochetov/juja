@@ -79,12 +79,12 @@ public class GuavaTest {
 
     @Test
     public void test4() {
-        ArrayList<String> list = Lists.newArrayList("First", "second", "third");
+        ArrayList<String> list = Lists.newArrayList("FirstGreet", "second", "third");
         HashSet<String> set = Sets.newHashSet("fourth", "fifth", "sixth");
 
         Iterable<String> concat = Iterables.concat(list, set);
 
-        assertEquals("[First, second, third, sixth, fifth, fourth]", concat.toString());
+        assertEquals("[FirstGreet, second, third, sixth, fifth, fourth]", concat.toString());
 
         Iterable<String> skip = Iterables.skip(concat, 2);
         Iterable<String> limit = Iterables.limit(skip, 2);
