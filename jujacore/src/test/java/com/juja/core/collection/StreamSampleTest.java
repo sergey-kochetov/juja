@@ -339,7 +339,7 @@ public class StreamSampleTest {
 
         // when
         List<Long> ids = users.stream()
-                // user -> user.getId()
+                // user -> user.getIdProduct()
                 .map(User::getId)
                 .collect(Collectors.toList());
         // then
